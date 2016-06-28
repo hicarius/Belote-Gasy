@@ -44,6 +44,7 @@
 
             if(name != ''){
                 bitmap.name = name;
+                bitmap.cursor = 'pointer';
             }
             // Ajouter le Bitmap au Stage et le retourner
             this.stage.addChild(bitmap);

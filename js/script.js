@@ -15,6 +15,8 @@ var p_deck; //position du deck
 var ps_card, pn_card, pe_card, po_card; //position du carte des joueur (sud, nord, est, oeust)
 var ps_card_table, pn_card_table, pe_card_table, po_card_table; //position du carte des joueur dur table  (sud, nord, est, oeust)
 
+var newIndex = 0;
+
 
 
 
@@ -82,7 +84,7 @@ function preparePosition()
     pe_card_table = {x: (w/2) + 55, y: (pn_card_table.y+80) + 30 };
 
     //sud = joueur
-    ps_card = {x: (w/2) - 52.5, y:500};
+    ps_card = {x: (w/2) - 52.5 - 200, y:500};
     ps_card_table = {x: (w/2) - 52.5, y: (pn_card_table.y+143) + 50 + 30 };
 
     //ouest
@@ -96,7 +98,20 @@ function prepareBord()
     $.each( ['c', 'd', 'h', 's'], function(i, color){
         $.each([7,8,9,10,'A','J','Q','K'], function(x, number){
             var name = color+number;
-            decks.push(easelJsUtils.createCard(loader.getResult(name), {x: p_deck.x, y: p_deck.y}, name));//ajout dans le pile
+            var card = easelJsUtils.createCard(loader.getResult(name), {x: p_deck.x, y: p_deck.y}, name);
+            card.addEventListener("mouseover", function(event) {
+                createjs.Tween.get(card, {override:true}).to({x:card.x, y: ps_card.y - 20},100);
+            })
+            card.addEventListener("mouseout", function(event) {
+                createjs.Tween.get(card, {override:true}).to({x:card.x, y: ps_card.y},100);
+            })
+            card.addEventListener("click", function(event) {
+                card.image = loader.getResult(card.name);
+                card.mouseEnabled = false;
+                card.removeAllEventListeners();
+                createjs.Tween.get(card, {override:true}).to({x:ps_card_table.x, y: ps_card_table.y},100);
+            })
+            decks.push(card);//ajout dans le pile
         });
     });
 
@@ -106,33 +121,39 @@ function prepareBord()
     addPlayer('heri4');
 
     //place back decks
-    //easelJsUtils.placeDecks(loader.getResult("bc_" + playingDeck.color + playingDeck.number), {x: p_deck.x, y: p_deck.y});
-
-    //place cards
-    //nord
-    /*
-    easelJsUtils.placeCard(loader.getResult("bc_" + playingDeck.color + playingDeck.number), {x: pn_card.x, y: pn_card.y});
-    easelJsUtils.placeCard(loader.getResult("s7"), {x: pn_card_table.x, y: pn_card_table.y});
-    //est
-    easelJsUtils.placeCard(loader.getResult("bc_" + playingDeck.color + playingDeck.number), {x: pe_card.x, y: pe_card.y, rotation:90 });
-    easelJsUtils.placeCard(loader.getResult("c10"), {x: pe_card_table.x, y: pe_card_table.y});
-    //sud
-    easelJsUtils.placeCard(loader.getResult("cK"), {x: ps_card.x, y: ps_card.y});
-    easelJsUtils.placeCard(loader.getResult("dA"), {x: ps_card_table.x, y: ps_card_table.y});
-    //ouest
-    easelJsUtils.placeCard(loader.getResult("bc_" + playingDeck.color + playingDeck.number), {x: po_card.x, y: po_card.y, rotation:90});
-    easelJsUtils.placeCard(loader.getResult("h9"), {x: po_card_table.x, y: po_card_table.y});
-    */
+    easelJsUtils.placeDecks(loader.getResult("bc_" + playingDeck.color + playingDeck.number), {x: p_deck.x, y: p_deck.y});
 };
 
 function partageDeck(num)
 {
-    var newIndex = 0;
     $.each(randPlayer, function(key, player){
         for(var i = 1; i <= num; i++){
-            //on prend la deernière carte
+            //on prend la dernière carte
             var card = decks[ decks.length - 1 ];
-            createjs.Tween.get(card, {override:true}).to({x:player.x},500);
+            switch (player.position){
+                case 'n' :
+                    createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y},500);
+                    card.mouseEnabled = false;
+                    card.image = loader.getResult("bc_" + playingDeck.color + playingDeck.number);
+                    player.x += 10;
+                    break;
+                case 'e' :
+                    createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y, rotation: 90},500);
+                    card.mouseEnabled = false;
+                    card.image = loader.getResult("bc_" + playingDeck.color + playingDeck.number);
+                    player.y += 10;
+                    break;
+                case 's' :
+                    createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y},500);
+                    player.x += 50;
+                    break;
+                case 'o' :
+                    createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y, rotation: 90},500);
+                    card.mouseEnabled = false;
+                    card.image = loader.getResult("bc_" + playingDeck.color + playingDeck.number);
+                    player.y += 10;
+                    break;
+            }
             //on ajoute dans la main du joueur
             player.cards.push(card);
             //on modifie l'index
@@ -146,19 +167,19 @@ function partageDeck(num)
 function addPlayer(name)
 {
     if( players.length < 4 ){
-        var x, y;
+        var x, y, position;
         switch(players.length){
             case 0:
-                x = ps_card.x; y =ps_card.y; break;
+                x = ps_card.x; y =ps_card.y; position = 's'; break;
             case 1:
-                x =po_card.x; y =po_card.x;break;
+                x =po_card.x; y =po_card.y; position = 'o';break;
             case 2:
-                x =pn_card.x; y =pn_card.x;break;
+                x =pn_card.x; y =pn_card.y; position = 'n';break;
             case 3:
-                x =pe_card.x; y =pe_card.x;break;
+                x =pe_card.x; y =pe_card.y; position = 'e';break;
         }
         myLog('Player ' + name + ' added.');
-        players.push({id: players.length+1, name: name, cards: [], x : x, y: y});
+        players.push({id: players.length+1, position: position, name: name, cards: [], x : x, y: y});
     }
     myLog('Players :', players);
     if(players.length == 4){
@@ -174,7 +195,9 @@ function startGame()
     //choisir le premier à servir
     checkFirstToRun();
 
-    //partageDeck(3);
+    partageDeck(3);
+    partageDeck(2);
+    partageDeck(3);
 }
 
 
