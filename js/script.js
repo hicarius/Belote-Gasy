@@ -61,7 +61,7 @@ function init()
         });
     });
     loader.installPlugin(createjs.Sound);
-    loader.loadManifest(manifest, true, "/app/assets/");
+    loader.loadManifest(manifest, true, "/assets/");
     loader.addEventListener("complete", loadComplete);
 };
 
