@@ -41,24 +41,27 @@ function init()
 
     loader = new createjs.LoadQueue(false);
     var manifest = [
-        {src: "spritesheets/playingCards.png", id: "spriteCard"},
-        {src: "spritesheets/playingCardBacks.png", id: "spriteBackCard"},
+        {src: "images/spritesheets/playingCards.png", id: "spriteCard"},
+        {src: "images/spritesheets/playingCardBacks.png", id: "spriteBackCard"},
+        {src: "sound/cardPlace1.mp3", id: "cardPlace"},
+        {src: "sound/cardSlide1.ogg", id: "cardSlide"},
     ];
 
     //load all card
     $.each( ['c', 'd', 'h', 's'], function(i, color){
         $.each([7,8,9,10,'A','J','Q','K'], function(x, number){
-            manifest.push({src: "cards/card_" + color + number + ".png", id: color + number});
+            manifest.push({src: "images/cards/card_" + color + number + ".png", id: color + number});
         });
     });
 
     //load all back card
     $.each( ['blue', 'green', 'red'], function(i, color){
         $.each([1,2,3,4,5], function(x, number){
-            manifest.push({src: "cards/cardBack_" + color + number + ".png", id: "bc_" + color + number});
+            manifest.push({src: "images/cards/cardBack_" + color + number + ".png", id: "bc_" + color + number});
         });
     });
-    loader.loadManifest(manifest, true, "../images/");
+    loader.installPlugin(createjs.Sound);
+    loader.loadManifest(manifest, true, "/app/assets/");
     loader.addEventListener("complete", loadComplete);
 };
 
@@ -156,12 +159,18 @@ function partageDeck(num)
             }
             //on ajoute dans la main du joueur
             player.cards.push(card);
+            createjs.Sound.play("cardPlace");
             //on modifie l'index
             stage.setChildIndex(card, newIndex++);
             //on supprime la carte du deck
             decks.pop();
         }
     });
+}
+
+function placeCard(player, card)
+{
+
 }
 
 function addPlayer(name)
@@ -195,9 +204,9 @@ function startGame()
     //choisir le premier à servir
     checkFirstToRun();
 
-    partageDeck(3);
+    //partageDeck(3);
     partageDeck(2);
-    partageDeck(3);
+    //partageDeck(3);
 }
 
 

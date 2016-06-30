@@ -1,0 +1,9 @@
+body{
+    text-align: center;
+}
+
+#card-canvas{
+    margin: 10px auto;
+    background: #efefef;
+    border: 1px solid #eee;
+}
