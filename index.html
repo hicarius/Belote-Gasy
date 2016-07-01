@@ -5,32 +5,30 @@
     <title>Belote Gasy</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/jquery.min.js"></script>
+    <script src="js/json2.js"></script>
+    <script src="js/jquery.websocket.js"></script>
     <script src="js/easeljs-NEXT.combined.js"></script>
     <script src="js/tweenjs-NEXT.min.js"></script>
     <script src="js/soundjs-NEXT.min.js"></script>
     <script src="js/preloadjs-NEXT.min.js"></script>
     <script src="js/script.js"></script>
     <script src="js/EaselJsUtils.js"></script>
-    <script>
-
-    try{
-        var socket = new Websocket("ws://www.belote-gasy.com/php/serveur.php");
-        log('WebSocket - status '+socket.readyState);
-        socket.onopen = function(msg){
-            console.log("Welcome - status "+this.readyState);
-        };
-        socket.onmessage = function(msg){
-            console.log("Received: "+msg.data);
-        };
-        socket.onclose = function(msg){
-            console.log("Disconnected - status "+this.readyState);
-        };
-    } catch(ex){
-        console.log(ex);
-    }
-    </script>
+    <style type="text/css">
+        html,body {
+            font:normal 0.9em arial,helvetica;
+        }
+        #log {
+            width:600px;
+            height:300px;
+            border:1px solid #7F9DB9;
+            overflow:auto;
+        }
+        #msg {
+            width:400px;
+        }
+    </style>
 </head>
-<body>
+<body onload="">
        <canvas id="card-canvas" width="800" height="600"></canvas>
 </body>
 </html>

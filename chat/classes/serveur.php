@@ -47,8 +47,8 @@ function process($from,$msg){
 	$msg = unwrap($msg);
 	$msg = json_decode($msg,true);
 
-	switch($msg['action']){
-		case "ctrl/chat/out"  		  : onCtrlChatOut($from,  $msg['msg']); 		 break;
+	switch($msg['type']){
+		case "ctrl/chat/out"  		  : onCtrlChatOut($from,  $msg['data']); 		 break;
 
 		default                 	  : onActionError($from, $msg);				 	 break;
 	}

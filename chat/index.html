@@ -1,24 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link href="style/style.css" type="text/css" rel="stylesheet"/>
-<title>Insert title here</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<link href="style/style.css" type="text/css" rel="stylesheet"/>
+	<script src="script/jquery.min.js"></script>
+	<script src="script/jquery.websocket.js"></script>
+	<title>Insert title here</title>
+	<script>
+		var uId = '';
+		var socket;
+
+		function initWebsocket()
+		{
+			if ("WebSocket" in window)
+			{
+				alert("WebSocket is supported by your Browser!");
+				// Let us open a web socket
+				socket = new WebSocket("ws://127.0.0.1:8000/server.php");
+
+				socket.addEventListener('send', function(event){
+					console.log(event);
+					/*type = event.
+					var m = {type: type};
+					m = $.extend(true, m, $.extend(true, {}, settings.options, m));
+					if (data) m['data'] = data;
+					return this._send(JSON.stringify(m));*/
+				});
+
+				socket.onopen = function()
+				{
+					console.log('socket opened');
+					$('.console').html($('.console').html() + 'socket opened Welcome - status ' + socket.readyState + '<br />');
+					uId = $('#sii-chat-name').val();
+					socket.send('ctrl/connection', '{"user":"' + uId + '"}');
+				};
+				socket.onmessage = function (evt)
+				{
+					e = JSON.parse(evt.data);
+					if (e.msg.length > 0) e.msg = JSON.parse(e.msg);
+					$('.sii-chat-content').html($('.sii-chat-content').html() + '&gt;<strong>' + e.msg.from + '</strong> : ' + e.msg.message + '<br />');
+					$('.console').html($('.console').html() + 'message event lanched <br />');
+				};
+				socket.onclose = function()
+				{
+					console.log('connection closed');
+					$('.console').html($('.console').html() + 'websocket closed - server not running <br />');
+					uId = '';
+					$('#sii-chat-name').val('');
+					$('#sii-chat-message').prop('disabled', true);
+					$('.sii-chat-send').prop('disabled', true);
+					socket.send('ctrl/disconnection', '{"user":"' + uId + '"}');
+				};
+			}
+			else
+			{
+				// The browser doesn't support WebSocket
+				alert("WebSocket NOT supported by your Browser!");
+			}
+			return socket;
+		}
+		/*initWebsocket = function() {
+			return $.websocket("ws://127.0.0.1:8000/server.php", {
+				events: {
+					message: function (str) {
+						e = JSON.parse(str.data);
+						if (e.msg.length > 0) e.msg = JSON.parse(e.msg);
+						$('.sii-chat-content').html($('.sii-chat-content').html() + '&gt;<strong>' + e.msg.from + '</strong> : ' + e.msg.message + '<br />');
+						$('.console').html($('.console').html() + 'message event lanched <br />');
+					},
+					open: function (e) {
+						console.log('socket opened');
+						$('.console').html($('.console').html() + 'socket opened Welcome - status ' + socket.readyState + '<br />');
+						uId = $('#sii-chat-name').val();
+						socket.send('ctrl/connection', '{"user":"' + uId + '"}');
+					},
+					error: function (err) {
+						console.log(err);
+						$('.console').html($('.console').html() + 'websocket error <br />');
+					},
+					close: function (e) {
+						console.log('connection closed');
+						$('.console').html($('.console').html() + 'websocket closed - server not running <br />');
+						uId = '';
+						$('#sii-chat-name').val('');
+						$('#sii-chat-message').prop('disabled', true);
+						$('.sii-chat-send').prop('disabled', true);
+						socket.send('ctrl/disconnection', '{"user":"' + uId + '"}');
+					}
+				}
+			});
+		}*/
+
+		$( function(){
+			$('.sii-chat-login').click(function(e){
+				e.preventDefault();
+				if( initWebsocket()){
+					$('#sii-chat-message').prop('disabled', false);
+					$('.sii-chat-send').prop('disabled', false);
+				}
+			});
+
+			$('.sii-chat-send').click(function(e){
+				e.preventDefault();
+				var message = '{"from":"' + uId + '", "message":"' + $('#sii-chat-message').val() + '"}';
+				socket.send('ctrl/chat/out', message);
+				$('#sii-chat-message').val('');
+				$('.console').html($('.console').html() + 'websocket message send <br />');
+			});
+		});
+	</script>
 </head>
 <body>
 	<div class="sii-chat">
-		<div>Pseudo : <input type="text" name="sii-chat-name" /><button class="sii-chat-login">Valider</button></div>
+		<div>Pseudo : <input type="text" id="sii-chat-name" name="sii-chat-name" /><button class="sii-chat-login">Valider</button></div>
 		<div class="sii-chat-content">
 			
 		</div>
 		<div>
 			<form class="sii-chat-form" onsubmit="return false;">
-				<input type="text" value="" name="sii-chat-message" disabled="disabled"/>
+				<input type="text" value="" id="sii-chat-message" name="sii-chat-message" disabled="disabled"/>
 				<button class="sii-chat-send" disabled="disabled">ok</button>
 			</form>
 		</div>
 		<div class="console"></div>
 	</div>
-<script type="text/javascript" src="script/websocket.js"></script>
 </body>
 </html>
