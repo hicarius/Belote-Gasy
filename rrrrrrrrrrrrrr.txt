@@ -1,0 +1,1 @@
+j: && cd J:\Perso\belote\ && php bin\server.php
