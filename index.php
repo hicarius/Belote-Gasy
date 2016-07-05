@@ -1,3 +1,9 @@
+<?php
+require_once '/src/Apps/MySession.php';
+use Apps\MySession;
+$session = new MySession();
+$session->start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,11 +21,11 @@
         {
             $.ajax({
                 method: 'POST',
-                url: '/src/get_user.php',
+                url: '/connect',
                 data: 'username=' + $('#user').val(),
                 success: function(html) {
                     if (html == 'TRUE') {
-                        document.location.href = '/game.php?g=' + $('#user').val();
+                        document.location.href = '/room';
                     }
                 }
             });

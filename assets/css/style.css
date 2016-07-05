@@ -1,5 +1,7 @@
 body{
     text-align: center;
+    width: 800px;
+    margin: 0 auto;
 }
 
 #card-canvas{
@@ -29,3 +31,51 @@ body{
     height: 100px;
     overflow: auto;
 }
+
+.container{
+
+}
+
+.list-room{
+    float: left;
+    list-style: none;
+}
+
+.list-users{
+    float: left;
+}
+
+.room-container{
+    list-style: none;
+}
+
+.room-user {
+    float: left;
+    height: 109px;
+    padding: 0 6px;
+    width: 95px;
+}
+
+.avatar {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.room-user .u-name {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.av-f1{ background-image: url('../images/avatar/f1.png');}
+.av-f2{background-image: url('../images/avatar/f2.png');}
+.av-f3{background-image: url('../images/avatar/f3.png');}
+.av-f4{ background-image: url('../images/avatar/f4.png');}
+.av-f5{background-image: url('../images/avatar/f5.png');}
+.av-m1{ background-image: url('../images/avatar/m1.png');}
+.av-m2{background-image: url('../images/avatar/m2.png');}
+.av-m3{background-image: url('../images/avatar/m3.png');}
+.av-m4{ background-image: url('../images/avatar/m4.png');}
+.av-noname{background-image: url('../images/avatar/noname.png');}

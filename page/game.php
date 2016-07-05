@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Belote Gasy</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/easeljs-NEXT.combined.js"></script>
-    <script src="assets/js/tweenjs-NEXT.min.js"></script>
-    <script src="assets/js/soundjs-NEXT.min.js"></script>
-    <script src="assets/js/preloadjs-NEXT.min.js"></script>
-    <script src="assets/js/script.js"></script>
-    <script src="assets/js/EaselJsUtils.js"></script>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/easeljs-NEXT.combined.js"></script>
+    <script src="../assets/js/tweenjs-NEXT.min.js"></script>
+    <script src="../assets/js/soundjs-NEXT.min.js"></script>
+    <script src="../assets/js/preloadjs-NEXT.min.js"></script>
+    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/EaselJsUtils.js"></script>
     <style type="text/css">
         html,body {
             font:normal 0.9em arial,helvetica;
@@ -29,7 +29,7 @@
         var websocket;
         $(document).ready(function(){
             //create a new WebSocket object.
-            var wsUri = "ws://localhost:8080/server";
+            var wsUri = "ws://localhost:9000/server";
             websocket = new WebSocket(wsUri);
 
             websocket.onopen = function (evt) {
