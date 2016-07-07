@@ -1,8 +1,8 @@
 <?php
+
 require_once '../src/Apps/MySession.php';
 use Apps\MySession;
 $session = new MySession();
-$session->start();
 
 $users = array(
     array('0', 'heri'),
@@ -20,7 +20,6 @@ foreach( $users as $u ){
         $user->id = $u[0];
         $user->name = $u[1];
         $session->set('user', $user);
-
         $html = "TRUE";
         break;
     }

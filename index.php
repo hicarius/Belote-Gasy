@@ -2,7 +2,6 @@
 require_once '/src/Apps/MySession.php';
 use Apps\MySession;
 $session = new MySession();
-$session->start();
 ?>
 <!DOCTYPE html>
 <html lang="en">

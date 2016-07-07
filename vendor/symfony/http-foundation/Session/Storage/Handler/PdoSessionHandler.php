@@ -429,7 +429,7 @@ class PdoSessionHandler implements \SessionHandlerInterface
      */
     private function beginTransaction()
     {
-        if (!$this->inTransaction) {
+        /*if (!$this->inTransaction) {
             if ('sqlite' === $this->driver) {
                 $this->pdo->exec('BEGIN IMMEDIATE TRANSACTION');
             } else {
@@ -439,7 +439,7 @@ class PdoSessionHandler implements \SessionHandlerInterface
                 $this->pdo->beginTransaction();
             }
             $this->inTransaction = true;
-        }
+        }*/
     }
 
     /**
@@ -447,7 +447,7 @@ class PdoSessionHandler implements \SessionHandlerInterface
      */
     private function commit()
     {
-        if ($this->inTransaction) {
+       /* if ($this->inTransaction) {
             try {
                 // commit read-write transaction which also releases the lock
                 if ('sqlite' === $this->driver) {
@@ -461,7 +461,7 @@ class PdoSessionHandler implements \SessionHandlerInterface
 
                 throw $e;
             }
-        }
+        }*/
     }
 
     /**
@@ -473,14 +473,14 @@ class PdoSessionHandler implements \SessionHandlerInterface
         // error would hide the real problem why rollback was called. We might not be
         // in a transaction when not using the transactional locking behavior or when
         // two callbacks (e.g. destroy and write) are invoked that both fail.
-        if ($this->inTransaction) {
+        /*if ($this->inTransaction) {
             if ('sqlite' === $this->driver) {
                 $this->pdo->exec('ROLLBACK');
             } else {
                 $this->pdo->rollBack();
             }
             $this->inTransaction = false;
-        }
+        }*/
     }
 
     /**

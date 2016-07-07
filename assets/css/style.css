@@ -32,8 +32,11 @@ body{
     overflow: auto;
 }
 
-.container{
-
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 .list-room{
@@ -41,8 +44,17 @@ body{
     list-style: none;
 }
 
+.list-room li{
+    margin-bottom: 50px;
+}
+
 .list-users{
     float: left;
+}
+
+.list-users ul{
+    list-style: none;
+    text-align: left;
 }
 
 .room-container{

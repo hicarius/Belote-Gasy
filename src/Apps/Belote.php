@@ -9,6 +9,7 @@ class Belote implements MessageComponentInterface
 {
     protected $sockets = array();
     protected $users = array();
+    protected $rooms = array();
     protected $dbh;
 
     public function __construct() {
@@ -16,65 +17,113 @@ class Belote implements MessageComponentInterface
     }
 
     public function onOpen(ConnectionInterface $socket) {
-        if(!$socket->Session->get('BEL_HS_SOCK')) {//on enregistre le socket et l'user
-            $user = new User($socket->resourceId, $socket, $socket->Session->get('user'));
+        $sessionUser = $socket->Session->get('user');
+        if(is_null($sessionUser)){
+            $this->sendToRoom($socket, json_encode(array('type'=>'close')), true); //redirection vers home si connexion fermée
+            $this->sendToRoom($socket, json_encode(array('type' => 'listuser', 'users' => User::getAllUsers($this->users))));
+            $socket->close();
+        }else {
+            $user = new User($socket->resourceId, $socket, $sessionUser);
             $this->users[$socket->resourceId] = $user;
             $this->sockets[$socket->resourceId] = $socket;
-            $socket->Session->set('BEL_HS_SOCK', 1);
-            $this->send($socket, json_encode(array('type' => 'listuser', 'message' => User::getAllUsers($this->users))));
+            $this->sendToRoom($socket, json_encode(array('type' => 'listuser', 'users' => User::getAllUsers($this->users))));
             echo "New connection! ({$socket->resourceId}) : {$user->data->name} \n";
-        }else{//on met à jour le nouveau socket de l'user
-
         }
+        //Afficher tous les tables à sa connexion
+        $this->sendToRoom($socket, json_encode(array('type' => 'room/loadAll', 'rooms' => $this->rooms)), true);
     }
 
     public function onMessage(ConnectionInterface $socket, $msgReceived) {
         $data = json_decode($msgReceived);
         switch($data->type){
-            case "newuser":
-
+            case "room/create":
+                $this->rooms[$data->roomId][$socket->resourceId] = $this->users[$socket->resourceId];
+                $this->users[$socket->resourceId]->setRoom($data->roomId);
+                $this->sendToRoom($socket, json_encode(array('type' => 'room/load', 'roomId' => $data->roomId, 'room' => $this->rooms[$data->roomId])));
+                echo "Room Created! ({$data->roomId}) \n";
                 break;
-            case "action/connected":
-                $user = $this->getUserBySocket($socket->resourceId);
-                $this->users[$user->id]->name = $data->user;
-                $this->send($socket, json_encode(array('type' => 'system', 'action'=>'connected','message' => $data->user .' est connecté')));
+            case "room/userjoin":
+                $this->rooms[$data->roomId][$socket->resourceId] = $this->users[$socket->resourceId];
+                $this->users[$socket->resourceId]->setRoom($data->roomId);
+                $this->sendToRoom($socket, json_encode(array('type' => 'room/update', 'roomId' => $data->roomId, 'room' => $this->rooms[$data->roomId])));
+                break;
+            case "room/userleave":
+                unset($this->rooms[$data->roomId][$socket->resourceId]);
+                $this->users[$socket->resourceId]->setRoom(null);
+                $this->sendToRoom($socket, json_encode(array('type' => 'room/update', 'roomId' => $data->roomId, 'room' => $this->rooms[$data->roomId])));
+                $this->clearRoom();
                 break;
             default:
-                $this->send($socket, $msgReceived);
+                $this->sendToRoom($socket, $msgReceived);
                 break;
         }
 
     }
 
     public function onClose(ConnectionInterface $socket) {
-        $user = $this->getUserBySocket($socket->resourceId);
-        if( $this->send($socket, json_encode(array('type' => 'system', 'action'=>'disconnected', 'message' => $user->name .' est déconnecté')))) {
-            unset($this->sockets[$socket->resourceId]);
-            unset($this->users[$socket->resourceId]);
-            echo "Connection {$socket->resourceId} has disconnected\n";
+        if(isset($this->users[$socket->resourceId])) {
+            if ($this->users[$socket->resourceId]->room !== NULL) {
+                unset($this->rooms[$this->users[$socket->resourceId]->room][$socket->resourceId]);
+            }
+            echo "Connection {$socket->resourceId} : {$this->users[$socket->resourceId]->data->name} has disconnected\n";
         }
+
+        //supprimer les rooms sans user
+        $this->clearRoom();
+
+        unset($this->sockets[$socket->resourceId]);
+        unset($this->users[$socket->resourceId]);
+        $this->sendToRoom($socket, json_encode(array('type' => 'listuser', 'users' => User::getAllUsers($this->users))));
     }
 
-    public function onError(ConnectionInterface $conn, \Exception $e) {
+    public function onError(ConnectionInterface $socket, \Exception $e) {
         echo "An error has occurred: {$e->getMessage()}\n";
-
-        $conn->close();
+        $socket->close();
     }
 
-    public function send($from, $msg, $withSender = false)
+    public function sendToRoom($fromSocket, $msg, $toThisSocket = false)
     {
-        foreach ($this->sockets as $socket) {
-            //if ($from === $client && !$withSender ) {
-             //   continue;
-            //}
-            // The sender is not the receiver, send to each client connected
-            $socket->send($msg);
+        if($toThisSocket){
+            $fromSocket->send($msg);
+        }else {
+            foreach ($this->sockets as $socket) {
+                //if ($fromSocket === $socket) {
+                //   continue;
+                //}
+                // The sender is not the receiver, send to each client connected
+                $socket->send($msg);
+            }
         }
         return true;
+    }
+
+    /**
+     * Teste si l'user dans la session est déjà enregistré dans websocket
+     * @param $sessionUser
+     * @return bool|int|string
+     */
+    public function isUserExist($sessionUser)
+    {
+        foreach ($this->users as $resourceId => $user) {
+            if($user->data->id == $sessionUser->id){
+                return $resourceId;
+            }
+        }
+        return false;
     }
 
     public function getUserBySocket($socket)
     {
         return $this->users[$socket];
+    }
+
+    public function clearRoom($socket = null)
+    {
+        foreach($this->rooms as $roomId => $room){
+            if( count($room) <= 0){
+                $this->sendToRoom($socket, json_encode(array('type' => 'room/delete', 'roomId' => $roomId)));
+                unset($this->rooms[$roomId]);
+            }
+        }
     }
 }
