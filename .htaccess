@@ -3,5 +3,5 @@ RewriteEngine On
 
 RewriteRule ^connect$ /page/get_user.php [L]
 RewriteRule ^room$ /page/room.php [L]
-RewriteRule ^create-room$ /page/create_room.php [L]
+RewriteRule ^load-table /page/create_table.php [L]
 RewriteRule ^game$ /page/game.php [L]

@@ -6,6 +6,7 @@ var scores = []; //tableau des scores
 var cardInTable = []; //les 4 cartes sur table
 
 var players = []; //les cartes de joueur 1
+var equips =  [[], []]; //les cartes de joueur 1
 
 var randPlayer = []; //pour savoir la main
 var currentFirstPlayer = 0;
@@ -17,16 +18,8 @@ var ps_card_table, pn_card_table, pe_card_table, po_card_table; //position du ca
 
 var newIndex = 0;
 
-
-
-
-// Initialisation
-$(document).ready(function() {
-    init();
-});
-
 // Fonction d'initialisation
-function init()
+function initGame()
 {
     canvas = $('#card-canvas').get(0);
     stage = new createjs.Stage(canvas);
@@ -60,7 +53,7 @@ function init()
 
 function loadComplete()
 {
-    prepareBord();
+    websocket.send( JSON.stringify({type: "game/loadcomplete"}));
     startTicker(30);
 };
 
@@ -85,40 +78,86 @@ function preparePosition()
     //ouest
     po_card = {x: 52.25, y: h/4 + 30};
     po_card_table = {x: (w/5) + 80, y: (pn_card_table.y+80) + 30 };
+
+
+    var equiPlayer = 0;
+    $.each(equips, function(equipId, users){
+        $.each(users, function(i, user){
+            if(user.id == uid){
+                equiPlayer = equipId;
+            }
+        });
+    });
+
+    var x, y, position;
+    //Position de player et son partenaire
+    $.each(equips[equiPlayer], function(i, userId){
+        if(uid == userId){//player
+            $.each(players, function(x, user){
+                if (userId == user.id) { //player
+                    players.position = 's';
+                    players.x = ps_card.x;
+                    players.y = ps_card.y;
+                }
+            });
+        }else{ //votre partenaire
+            $.each(players, function(x, user){
+                if (userId == user.id) { //player
+                    players.position = 'n';
+                    players.x = pn_card.x;
+                    players.y = pn_card.y;
+                }
+            });
+        }
+    });
+
+    //Position de l'adversaire
+    var advEquip = (equiPlayer==0) ? 1 : 0;
+    $.each(equips[advEquip], function(i, userId){
+        $.each(players, function(x, user){
+            if (userId == user.id) {
+                if(i == 0) {
+                    players.position = 'o';
+                    players.x = po_card.x;
+                    players.y = po_card.y;
+                }else{
+                    players.position = 'e';
+                    players.x = pe_card.x;
+                    players.y = pe_card.y;
+                }
+            }
+        });
+    });
 }
 
-function prepareBord()
+function prepareBord(deckData)
 {
     //create decks
-    $.each( ['tr', 'ca', 'co', 'pi'], function(i, color){
-        $.each([7,8,9,10,'A','J','Q','K'], function(x, number){
-            var name = color+number;
-            var card = easelJsUtils.createCard(loader.getResult(name), {x: p_deck.x, y: p_deck.y}, name);
+    $.each( deckData, function(i, item){
+            var card = easelJsUtils.createCard(loader.getResult(item), {x: p_deck.x, y: p_deck.y}, item);
+            decks.push(card);
+
+            /*
             card.addEventListener("mouseover", function(event) {
                 createjs.Tween.get(card, {override:true}).to({x:card.x, y: ps_card.y - 20},100);
-            })
+            });
             card.addEventListener("mouseout", function(event) {
                 createjs.Tween.get(card, {override:true}).to({x:card.x, y: ps_card.y},100);
-            })
+            });
             card.addEventListener("click", function(event) {
                 card.image = loader.getResult(card.name);
                 card.mouseEnabled = false;
                 card.removeAllEventListeners();
                 createjs.Tween.get(card, {override:true}).to({x:ps_card_table.x, y: ps_card_table.y},100);
-            })
-            decks.push(card);//ajout dans le pile
-        });
+            });
+             */
     });
-
-    addPlayer('heri1');
-    addPlayer('heri2');
-    addPlayer('heri3');
-    addPlayer('heri4');
 
     //place back decks
     var back = easelJsUtils.placeDecks(loader.getResult("back"), {x: p_deck.x, y: p_deck.y});
     back.removeAllEventListeners();
 
+    //websocket.send( JSON.stringify({type: "game/addplayer"}));
 };
 
 function partageDeck(num)
@@ -162,34 +201,19 @@ function partageDeck(num)
     });
 }
 
-function addPlayer(name)
+function addPlayer(userId, name)
 {
-    if( players.length < 4 ){
-        var x, y, position;
-        switch(players.length){
-            case 0:
-                x = ps_card.x; y =ps_card.y; position = 's'; break;
-            case 1:
-                x =po_card.x; y =po_card.y; position = 'o';break;
-            case 2:
-                x =pn_card.x; y =pn_card.y; position = 'n';break;
-            case 3:
-                x =pe_card.x; y =pe_card.y; position = 'e';break;
-        }
-        myLog('Player ' + name + ' added.');
-        players.push({id: players.length+1, position: position, name: name, cards: [], x : x, y: y});
-    }
-    myLog('Players :', players);
-    if(players.length == 4){
-        startGame();
-    }
+    players.push({id: userId, position: '', name: name, cards: [], x : 0, y: 0});
 }
 
+function addPlayerToEquip(userId, equipId)
+{
+    equips[equipId].push(userId);
+}
+
+/*
 function startGame()
 {
-    myLog('Game starting...');
-    easelJsUtils.shuffle(decks); //pasoana ny karatra
-
     //choisir le premier à servir
     checkFirstToRun();
 
@@ -197,6 +221,7 @@ function startGame()
     partageDeck(2);
     //partageDeck(3);
 }
+*/
 
 
 function checkFirstToRun()
@@ -219,13 +244,3 @@ function startTicker(fps)
         stage.update();
     });
 };
-
-function myLog(txt, data)
-{
-    /*if(data != null){
-        console.log(txt);
-        console.log(data);
-    }else{
-        console.log(txt);
-    }*/
-}

@@ -81,7 +81,7 @@ class MySession extends Handler\PdoSessionHandler
 		if( count($result) > 0 ) {
 			$stmt = $this->pdo->query("UPDATE sessions SET sess_data = '{$data}', sess_lifetime = '{$maxlifetime}', sess_time = '{$time}' WHERE sess_id = '{$sessionId}'");
 		}else {
-			$stmt = $this->pdo->query("INSERT INTO sessions VALUES ('{$sessionId}', '{$data}', '{$maxlifetime}', '{$time}'");
+			$stmt = $this->pdo->query("INSERT INTO sessions VALUES ('{$sessionId}', '{$data}', '{$maxlifetime}', '{$time}')");
 		}
 		if($stmt->execute()){
 			return true;

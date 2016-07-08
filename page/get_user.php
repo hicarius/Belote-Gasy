@@ -20,6 +20,7 @@ foreach( $users as $u ){
         $user->id = $u[0];
         $user->name = $u[1];
         $session->set('user', $user);
+        $session->set('in_table', 0);
         $html = "TRUE";
         break;
     }

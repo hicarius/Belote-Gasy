@@ -19,7 +19,11 @@ $user = $session->get('user');
 		<script src="../assets/js/jquery.min.js"></script>
 		<script src="../assets/js/belote.js"></script>
 		<script>
-			var uid = '';
+			var uid = '<?php echo $user->id ?>';
+			var userHasRoom = false;
+			var countDown = false;
+			var baseCountDown = 10;
+			var countDownDuree = baseCountDown;
 			var websocket;
 			$( function(){
 				websocket = new WebSocket("ws://www.belote-gasy.com:9000/server");
@@ -34,6 +38,9 @@ $user = $session->get('user');
 				websocket.onmessage = function(ev) {
 					var data = JSON.parse(ev.data); //PHP sends Json data
 					switch (data.type){
+						case 'console':
+							debug(data.msg);
+							break;
 						case 'close'://deconnexion
 							document.location.href = '/';
 							break;
@@ -50,13 +57,45 @@ $user = $session->get('user');
 							});
 							break;
 						case 'room/load':
-							$('.list-room').append( createRoomHtml(data.roomId, data.room) );
+							if($('.list-room').append( createRoomHtml(data.roomId, data.room) )){
+								if (userHasRoom == true) {
+									$('.room-in').hide();
+								} else {
+									$('.room-in').show();
+								}
+							}
 							break;
 						case 'room/update':
-							$('.list-room div#' + data.roomId).html( updateRoomHtml(data.roomId, data.room) );
+							if($('.list-room div#' + data.roomId).html( updateRoomHtml(data.roomId, data.room) )) {
+								if (userHasRoom == true) {
+									$('.room-in').hide();
+								} else {
+									$('.room-in').show();
+								}
+							}
 							break;
 						case 'room/delete':
-							$('.list-room div#' + data.roomId).remove();
+							$('.list-room div#' + data.roomId).parent('li').remove();
+							break;
+						case 'room/attemptToStart':
+							attemptToStart(data.roomId);
+							break;
+						case 'room/stopCountDown':
+							$.each(data.room, function(i, user){
+								if(uid == user.data.id) {
+									stopCountdown();
+								}
+							});
+							break;
+						case 'room/loadGame':
+							$.ajax({
+								method: 'post',
+								url: '/load-table',
+								data: 'room=' + data.roomId,
+								success: function () {
+									document.location.href = '/game?r=' + data.roomId;
+								}
+							});
 							break;
 					}
 
@@ -66,6 +105,7 @@ $user = $session->get('user');
 	</head>
 	<body>
 		<div id="wrapper" class="container">
+			<header>Bienvenue <?php echo $user->name ?><input type="button" class="disconnect" value="Quit"></header>
 			<div class="container col-md-12">
 				<div class="container col-md-8">
 					<div class="panel panel-default">
