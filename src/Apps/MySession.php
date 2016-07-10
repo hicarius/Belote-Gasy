@@ -51,6 +51,11 @@ class MySession extends Handler\PdoSessionHandler
 		return $_SESSION['_sf2_attributes'][$name];
 	}
 
+	public function delete($name)
+	{
+		unset($_SESSION[$name]);
+	}
+
 	public function _open(){
 		$sessionName = "PHPSESSID";
 		$savePath = ini_get('session.save_path');

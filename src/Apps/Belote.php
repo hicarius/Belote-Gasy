@@ -37,13 +37,6 @@ class Belote implements MessageComponentInterface
             $this->sendToClient($socket, json_encode(array('type' => 'room/loadAll', 'rooms' => $this->rooms)), true);
         }else{ //si l'user est sur la table
             $table = $socket->Session->get('table');
-            $this->tables[$table]['decks'] = array();
-            $this->tables[$table]['users'][$sessionUser->id] = $sessionUser;
-            $this->tables[$table]['loading'] = 0;
-            $this->tables[$table]['sockets'][$sessionUser->id] = $socket;
-
-            $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'addPlayer', 'userId' => $sessionUser->id, 'userName' => $sessionUser->name )));
-            $this->log($socket, "Table {$table} : User {$sessionUser->name} join the table");
 
             //on les sépare en deux équipes
             if( isset($this->tables[$table]['equips']) ){
@@ -51,10 +44,12 @@ class Belote implements MessageComponentInterface
             }else{
                 $equipNumber = 0;
             }
-
             $this->tables[$table]['equips'][$equipNumber][] = $sessionUser->id;
-            $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'addPlayerToEquip', 'userId' => $sessionUser->id, 'equip' => $equipNumber )));
-            $this->log($socket, "Table {$table} : User {$sessionUser->name} added to equip n°{$equipNumber} ");
+
+            $this->tables[$table]['decks'] = array();
+            $this->tables[$table]['users'][$sessionUser->id] = $sessionUser;
+            $this->tables[$table]['loading'] = 0;
+            $this->tables[$table]['sockets'][$sessionUser->id] = $socket;
 
             if( count($this->tables[$table]['users']) >= 4 ){ //tous les 4 joueurs sont connectées sur la table
                 $this->log($socket, "Table {$table} : All players are join the table");
@@ -93,6 +88,16 @@ class Belote implements MessageComponentInterface
                     $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'prepareBoard', 'decks' => $this->tables[$table]['decks'])));
                 }
                 break;
+			case 'game/card/split': 
+				$table = $socket->Session->get('table');
+				Table::splitDeck($this->tables[$table], $data->number);	
+				$this->log($socket, "Table {$table} : Card splitted!");
+				$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doDivise', 'divider' => $this->tables[$table]['divider'], 'decks' => $this->tables[$table]['decks'])));
+				break;
+			case 'game/card/doDivise': 
+				$table = $socket->Session->get('table');
+				$this->partageCard($socket, $data->number, $table);
+				break;
             default:
                 $this->sendToClient($socket, $msgReceived);
                 break;
@@ -101,20 +106,29 @@ class Belote implements MessageComponentInterface
     }
 
     public function onClose(ConnectionInterface $socket) {
-        if(isset($this->users[$socket->resourceId])) {
-            if ($this->users[$socket->resourceId]->room !== NULL) {
-                unset($this->rooms[$this->users[$socket->resourceId]->room][$socket->resourceId]);
-                $this->sendToClient($socket, json_encode(array('type' => 'room/update', 'roomId' => $this->users[$socket->resourceId]->room, 'room' => $this->rooms[$this->users[$socket->resourceId]->room])));
+        if($socket->Session->get('in_table') == 0) {
+            if (isset($this->users[$socket->resourceId])) {
+                if ($this->users[$socket->resourceId]->room !== NULL) {
+                    unset($this->rooms[$this->users[$socket->resourceId]->room][$socket->resourceId]);
+                    $this->sendToClient($socket, json_encode(array('type' => 'room/update', 'roomId' => $this->users[$socket->resourceId]->room, 'room' => $this->rooms[$this->users[$socket->resourceId]->room])));
+                }
+                $this->log($socket, "Connection {$socket->resourceId} : {$this->users[$socket->resourceId]->data->name} has disconnected");
             }
-            $this->log($socket, "Connection {$socket->resourceId} : {$this->users[$socket->resourceId]->data->name} has disconnected");
+
+            //supprimer les rooms sans user
+            $this->clearRoom($socket);
+
+            unset($this->sockets[$socket->resourceId]);
+            unset($this->users[$socket->resourceId]);
+            $this->sendToClient($socket, json_encode(array('type' => 'listuser', 'users' => User::getAllUsers($this->users))));
+        }else{
+            $sessionUser = $socket->Session->get('user');
+            $table = $socket->Session->get('table');
+            unset($this->tables[$table]['users'][$sessionUser->id]);
+            unset($this->tables[$table]['sockets'][$sessionUser->id]);
+            $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'quit')), true);
+            $this->log($socket, "Table {$table} : Player {$sessionUser->name} quit the table");
         }
-
-        //supprimer les rooms sans user
-        $this->clearRoom($socket);
-
-        unset($this->sockets[$socket->resourceId]);
-        unset($this->users[$socket->resourceId]);
-        $this->sendToClient($socket, json_encode(array('type' => 'listuser', 'users' => User::getAllUsers($this->users))));
     }
 
     public function onError(ConnectionInterface $socket, \Exception $e) {
@@ -220,15 +234,75 @@ class Belote implements MessageComponentInterface
 
     protected function _prepareTable($socket, $table)
     {
-        $this->log($socket, "Table {$table} : Starting game ...");
+        $this->log($socket, "Table {$table} : Preparing game ...");
         try {
+            //prepartation players and equips
+            $position = 1;
+            foreach ($this->tables[$table]['equips'] as $equipId => $userInEquip) {
+                foreach ($userInEquip as $userId) {
+					if($position == 1){$firstPosition = 1; $splitter = 3; $divider = 4; $last = 2;}
+                    $user = $this->tables[$table]['users'][$userId];
+					$user->position = $position;
+                    $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'addPlayer', 'userId' => $user->id, 'userName' => $user->name, 'position' => $position)));
+                    $this->log($socket, "Table {$table} : User {$user->name} join the table");
+
+                    $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'addPlayerToEquip', 'userId' => $user->id, 'equipId' => $equipId, 'position' => $position)));
+                    $this->log($socket, "Table {$table} : User {$user->name} added to equip #{$equipId} ");
+                    switch ($position){
+                        case 1: $position = 3;break;
+                        case 3: $position = 2;break;
+                        case 2: $position = 4;break;
+                        default:break;
+                    }
+                }
+            }
+			$this->tables[$table]['first'] = $firstPosition;
+			$this->tables[$table]['splitter'] = $splitter;
+			$this->tables[$table]['divider'] = $divider;
+			$this->tables[$table]['last'] = $last;
+			$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'setFirst', 'first' => $firstPosition, 'splitter' => $splitter, 'divider' => $divider)));
+
             //preparation de la table
             if (Table::prepareDecks($this->tables[$table])) {
-                $this->log($socket, "Table {$table} : Decks prepared!");
-                $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'starting', 'table' => $table)));
+                $this->log($socket, "Table {$table} : Decks prepared and shuffled X 3 !");
+                $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'init', 'table' => $table)));
             }
         }catch (Exception $e){
             $this->log($socket, "(ERROR)Table {$table} : " . $e->getMessage());
         }
     }
+	
+	protected function partageCard($socket, $number, $table)
+	{
+		//check first player
+		foreach ($this->tables[$table]['users'] as $user) {
+			if($user->position == $this->tables[$table]['first']){
+				$this->tables[$table]['rand_player'][0] = $user;
+			}
+			if($user->position == $this->tables[$table]['last']){
+				$this->tables[$table]['rand_player'][1] = $user;
+			}
+			if($user->position == $this->tables[$table]['divider']){
+				$this->tables[$table]['rand_player'][3] = $user;
+			}
+			if($user->position == $this->tables[$table]['splitter']){
+				$this->tables[$table]['rand_player'][2] = $user;
+			}
+		}
+		
+		$decks = $this->tables[$table]['decks'];
+		foreach($this->tables[$table]['rand_player'] as $player){
+			for($i = 1; $i <= $number; $i++){
+				$card = $decks[ count($decks) - 1 ];
+				$this->tables[$table]['user_cards'][$player->id][] = $card;
+				echo print_r($this->tables[$table]['user_cards'], true);
+								
+				$this->log($socket, "Table {$table} : Card {$card} give to {$player->name}!");
+				$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'diviseCard', 'userId' => $player->id, 'card' => $card)));
+				sleep(1);
+				unset($this->tables[$table]['decks'][count($decks) - 1]);
+				$decks = $this->tables[$table]['decks'];
+			}
+		}
+	}
 }

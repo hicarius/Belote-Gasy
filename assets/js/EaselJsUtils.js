@@ -87,13 +87,13 @@
          * - String cursor : type de pointeur souris
          * @returns {Text}
          */
-        createText: function(text, font, x, y, options) {
+        createText: function(text, options) {
             // Définir le texte, la police et la position
             var txt = new createjs.Text();
-            txt.font = font;
+            txt.font = options.font;
             txt.text = text;
-            txt.x = x;
-            txt.y = y;
+            txt.x = options.x;
+            txt.y = options.y;
             // Appliquer les options
             if (options) {
                 if (options.color) {

@@ -3,6 +3,8 @@ require_once '../src/Apps/MySession.php';
 use Apps\MySession;
 $session = new MySession();
 $user = $session->get('user');
+$session->set('in_table', 0);
+$session->delete('table');
 ?>
 <!DOCTYPE html>
 <html>

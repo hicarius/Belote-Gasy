@@ -66,18 +66,31 @@ if( ($session->get('in_table') == 1 && $session->get('table') == $_GET['r']) == 
                             break;
                         case 'game':
                             switch (data.action) {
+                                case 'quit':
+                                    document.location.href = '/room';
+                                    break;
                                 case 'addPlayer':
-                                    addPlayer(data.userId, data.userName);
+                                    addPlayer(data.userId, data.userName, data.position);
+                                    console.log(players);
                                     break;
                                 case 'addPlayerToEquip':
-                                    addPlayerToEquip(data.userId, data.equip);
+                                    addPlayerToEquip(data.userId, data.equipId, data.position);
                                     break;
-                                case 'starting':
+                                case 'init':
                                     initGame();
                                     break;
                                 case 'prepareBoard':
                                     prepareBord(data.decks);
                                     break;
+								case 'setFirst':
+                                    checkFirstToRun(data.first, data.divider, data.splitter);
+                                    break;
+								case 'doDivise':
+                                    checkDiviseAction(data.decks, data.divider);
+                                    break;
+								case 'diviseCard':
+                                    diviseCard(data.userId, data.card);
+                                    break;									
                             }
                             break;
                     }
@@ -89,8 +102,9 @@ if( ($session->get('in_table') == 1 && $session->get('table') == $_GET['r']) == 
     <body onload="">
         <div id="console"></div>
         <canvas id="card-canvas" width="800" height="600"></canvas>
-        <div id="actions">
-            <input type="button" value="AddPlayer" />
+        <div id="actions" class="action">
+            <input type="button" class="splitter" value="Couper" style="display:none;" />
+			<input type="button" class="divider" value="Partager" style="display:none;" />
         </div>
     </body>
 </html>

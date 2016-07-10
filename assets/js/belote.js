@@ -20,11 +20,19 @@ $(function(){
         websocket.close();
         document.location.href = '/';
     });
+	
+	$('body').on('click', '.divider', function(){
+        websocket.send( JSON.stringify({type: "game/card/doDivise", number:1}));
+    });
+	
+	$('body').on('click', '.splitter', function(){
+        websocket.send( JSON.stringify({type: "game/card/split", number:12}));
+    });
 });
 
 function debug(debug)
 {
-    $('#console').append(debug + '<br />');
+    $('#console').prepend(debug + '<br />');
 }
 
 function createRoomHtml(roomId, room)
