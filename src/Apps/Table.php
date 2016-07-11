@@ -14,6 +14,8 @@ class Table
 	public $last;
 	public $rand_player;
 	public $user_cards = array();
+    public $in_table = array();
+    public $appel;
 
     public function __construct($id)
     {
@@ -66,4 +68,10 @@ class Table
 		$table['decks'] = array_merge($deck_2, $deck_1);		
 	}
 
+    public static function checkWinCard(&$table)
+    {
+        //$table['in_table'];
+
+        return 1;//$winnerUserId;
+    }
 }

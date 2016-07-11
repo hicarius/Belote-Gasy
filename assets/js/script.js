@@ -67,24 +67,24 @@ function preparePosition()
 
     //position des cartes des joueurs
     //nord
-    pn_card = {x: (w/2) - 52.5, y: - 52.75};
-    pn_card_table = {x: (w/2) - 52.5, y: (h/5) - 50 + 30 };
+    pn_card = {x: 375, y: - 10, rotation: 40};
+    pn_card_table = {x: 370, y: 175, rotation: 0 };
 	pn_first_palette = {x: 385,y: 15};
 
     //est
-    pe_card =  {x: w + 52.75, y: h/4 + 30};
-    pe_card_table = {x: (w/2) + 55, y: (pn_card_table.y+80) + 30 };
+    pe_card =  {x: 780, y: 240, rotation: 130};
+    pe_card_table = {x: 440, y: 225, rotation: 0 };
 	pe_first_palette = {x: 757,y: 272};
 
     //sud = joueur
     ps_card = {x: (w/2) - 52.5 - 200, y:500};
-    ps_card_table = {x: (w/2) - 52.5, y: (pn_card_table.y+143) + 50 + 30 };
+    ps_card_table = {x: 370, y: 275, rotation: 0 };
 	ps_first_palette = {x: 385,y: 560};
 
     //ouest
-    po_card = {x: 52.25, y: h/4 + 30};
-    po_card_table = {x: (w/5) + 80, y: (pn_card_table.y+80) + 30 };
-	po_first_palette = {x: 757,y: 6};
+    po_card = {x: 75, y: 185, rotation: 50};
+    po_card_table = {x: 300, y: 225, rotation: 0 };
+	po_first_palette = {x: 6,y: 272};
 
     var equiPlayer = 0;
     $.each(equips, function(equipId, users){
@@ -117,7 +117,7 @@ function preparePosition()
                     user.y = pn_card.y;
 					user.first_palette = pn_first_palette;
                     user.equip = equiPlayer;
-					user.rotation = 20;
+					user.rotation = pn_card.rotation;
                 }
             });
         }
@@ -143,9 +143,9 @@ function preparePosition()
                         break;
                 }
 				user.first_palette = (user.orientation == 'e') ? pe_first_palette : po_first_palette ;
-				user.rotation = (user.orientation == 'e') ? 130 : 50 ;
-                user.x = po_card.x;
-                user.y = po_card.y;
+				user.rotation = (user.orientation == 'e') ? pe_card.rotation : po_card.rotation;
+                user.x = (user.orientation == 'e') ? pe_card.x : po_card.x;
+                user.y = (user.orientation == 'e') ? pe_card.y : po_card.y;
                 user.equip = equipAdv;
             }
         });
@@ -162,15 +162,15 @@ function prepareBord(deckData)
     });
 
     //create screen
-    var bg_n = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:pn_card.x + 10, y:pn_card.y+25}, 'bg_n');
+    var bg_n = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:357.5, y:-27.75}, 'bg_n');
 	bg_n.mouseEnabled = false;
     var text_n = easelJsUtils.createText("", {font: "14px Arial", x:bg_n.x + 25, y:bg_n.y+30});    
 	
-    var bg_o = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:po_card.x - 75, y:po_card.y+50}, 'bg_o');
+    var bg_o = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:-22.75, y:225}, 'bg_o');
     bg_o.mouseEnabled = false;
 	var text_o = easelJsUtils.createText("", {font: "14px Arial", x:bg_o.x + 25, y:bg_o.y+30});
 	
-    var bg_e = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:pe_card.x - 125, y:pe_card.y+50}, 'bg_e');
+    var bg_e = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:725, y:225}, 'bg_e');
     bg_e.mouseEnabled = false;
 	var text_e = easelJsUtils.createText("", {font: "14px Arial", x:bg_e.x + 25, y:bg_e.y+30});
 	
@@ -187,58 +187,11 @@ function prepareBord(deckData)
 				break;
 		}
 	});
-	
+
+    firstBoard = easelJsUtils.createBitmap(loader.getResult('first'), {x: 0, y: 0}, 'first');
+    firstBoard.mouseEnabled = false;
 	websocket.send( JSON.stringify({type: "game/card/prepareSplit"}));
 };
-
-function partageDeck(num)
-{
-    $.each(randPlayer, function(key, player){
-        for(var i = 1; i <= num; i++){
-            //on prend la dernière carte
-            var card = decks[ decks.length - 1 ];
-            switch (player.orientation){
-                case 'n' :
-                    createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y},500);
-                    player.x += 10;
-                    break;
-                case 'e' :
-                    createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y, rotation: 90},500);
-                    player.y += 10;
-                    break;
-                case 's' :
-                    createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y},500);
-                    card.mouseEnabled = true;
-                    card.image = loader.getResult(card.name);
-                    card.addEventListener("mouseover", function(event) {
-                        createjs.Tween.get(card, {override:true}).to({x:card.x, y: ps_card.y - 20},100);
-                    });
-                    card.addEventListener("mouseout", function(event) {
-                        createjs.Tween.get(card, {override:true}).to({x:card.x, y: ps_card.y},100);
-                    });
-                    card.addEventListener("click", function(event) {
-                        card.image = loader.getResult(card.name);
-                        card.mouseEnabled = false;
-                        card.removeAllEventListeners();
-                        createjs.Tween.get(card, {override:true}).to({x:ps_card_table.x, y: ps_card_table.y},100);
-                    });
-                    player.x += 60;
-                    break;
-                case 'o' :
-                    createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y, rotation: 90},500);
-                    player.y += 10;
-                    break;
-            }
-            //on ajoute dans la main du joueur
-            //player.cards.push(card);
-            createjs.Sound.play("cardPlace");
-            //on modifie l'index
-            stage.setChildIndex(card, newIndex++);
-            //on supprime la carte du deck
-            decks.pop();
-        }
-    });
-}
 
 function addPlayer(userId, name, position)
 {
@@ -252,39 +205,71 @@ function addPlayerToEquip(userId, equipId)
 
 function checkFirstToRun(first, divider, splitter)
 {
-	var u_first, u_splitter, u_divider;
+	var u_splitter, u_divider;
 	$.each(players, function(x, user){
-		if(user.position == first){
-			u_first = user;
-		}
-		if(user.position == splitter){
-			u_splitter = user;
-		}
+        if(user.position == splitter){
+            u_splitter = user;
+            user.isFirst = false;
+            user.isSecond = false;
+            user.isTierce = true;
+            user.isLast = false;
+        }
 		if(user.position == divider){
 			u_divider = user;
+            user.isFirst = false;
+            user.isSecond = false;
+            user.isTierce = false;
+            user.isLast = true;
 		}
+        if (user.position == first) {
+            user.isFirst = true;
+            user.isSecond = false;
+            user.isTierce = false;
+            user.isLast = false;
+            createjs.Tween.get(firstBoard, {override: true}).to({
+                x: user.first_palette.x,
+                y: user.first_palette.y
+            }, 500);
+        }
+        if(user.position != first && user.position != divider && user.position != splitter ){
+            user.isFirst = false;
+            user.isSecond = true;
+            user.isTierce = false;
+            user.isLast = false;
+        }
 	});	
 	
 	if(uid == u_splitter.id){
 		showAction('splitter');
 	}
-	
-	if(uid == u_first.id){		
-		createjs.Tween.get(firstBoard, {override:true}).to({x:u_first.first_palette.x, y: u_first.first_palette.y},500);
-	}
 }
 
 function showAction(action)
 {
-	switch(action){
-		case 'splitter':
-			$('.action .splitter').show();
-			break;
-		case 'divider':
-			$('.action .divider').show();
-			break;
+    $('#actions').show();
+    switch(action){
+        case 'splitter':
+            $('.action .splitter').show();
+            break;
+        case 'divider-1':
+            $('.action .divider-1').show();
+            break;
+        case 'divider-2':
+            $('.action .divider-2').show();
+            break;
+        case 'appel':
+            $('.action .appel').show();
+            $('.m-appel').attr('disabled', false);
+            $('.m-appel.sc').attr('disabled', true);
+            break;
 
-	}
+    }
+}
+
+function hideAction()
+{
+    $('#actions').hide();
+    $('.splitter, .divider-1, .divider-2, .appel').hide();
 }
 
 function checkDiviseAction(deckData, dividerPosition)
@@ -302,12 +287,12 @@ function checkDiviseAction(deckData, dividerPosition)
 			u_divider = user;
 			return false;
 		}
-	});	
-	
+	});
+
+    hideAction();
 	if(uid == u_divider.id){
-		showAction('divider');
+		showAction('divider-1');
 	}
-	$('.action .splitter').hide();
 }
 
 function diviseCard(userId, cardName)
@@ -327,17 +312,20 @@ function diviseCard(userId, cardName)
 			return false;
 		}
 	});
-console.log(card);
+
 	switch (player.orientation){
 		case 'n' :
-			createjs.Tween.get(card, {override:true}).to({x:player.x, y: 40, rotation: player.rotation},500);
+            card.mouseEnabled = false;
+			createjs.Tween.get(card, {override:true}).to({x: player.x, y: player.y, rotation: player.rotation},500);
 			player.x += 10;
 			player.rotation -= 10;
 			break;
 		case 'e' :
-			createjs.Tween.get(card, {override:true}).to({x:750, y: player.y, rotation: player.rotation},500);
-			player.y += 10;
-			player.rotation -= 20;
+            card.mouseEnabled = false;
+			createjs.Tween.get(card, {override:true}).to({x: player.x, y: player.y, rotation: player.rotation},500);
+			player.x += 2;
+            player.y += 10;
+			player.rotation -= 10;
 			break;
 		case 's' :
 			createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y},500);
@@ -350,25 +338,112 @@ console.log(card);
 				createjs.Tween.get(card, {override:true}).to({x:card.x, y: ps_card.y},100);
 			});
 			card.addEventListener("click", function(event) {
-				card.image = loader.getResult(card.name);
 				card.mouseEnabled = false;
 				card.removeAllEventListeners();
-				createjs.Tween.get(card, {override:true}).to({x:ps_card_table.x, y: ps_card_table.y},100);
+                websocket.send(JSON.stringify({type: "game/card/placed", userId: uid, cardName: card.name}));
+
 			});
 			player.x += 60;
 			break;
 		case 'o' :
-			createjs.Tween.get(card, {override:true}).to({x:150, y: player.y, rotation: player.rotation},500);
-			player.y += 10;
+            card.mouseEnabled = false;
+			createjs.Tween.get(card, {override:true}).to({x: player.x, y: player.y, rotation: player.rotation},500);
+			player.y += 20;
+            if(player.x<=100)player.x += 25;
 			player.rotation += 10;
 			break;
 	}
 	
 	//on ajoute dans la main du joueur
-	player.cards.push(card);
 	createjs.Sound.play("cardPlace");
 	//on modifie l'index
-	stage.setChildIndex(card, newIndex++);
-	//on supprime la carte du deck
-	//decks.pop();
+    newIndex ++;
+
+	stage.setChildIndex(card, newIndex);
+}
+
+function placedCard(userId, userPosition, cardName)
+{
+    var currentUser;
+    var card;
+
+    $.each(players, function(x, user){
+        if(user.id == userId){
+            currentUser = user;
+            return false;
+        }
+    });
+    switch(currentUser.orientation){
+        case 's': position = ps_card_table;break;
+        case 'n': position = pn_card_table;break;
+        case 'o': position = po_card_table;break;
+        case 'e': position = pe_card_table;break;
+    }
+
+    $.each(decks, function(x, carte){
+        if(carte.name == cardName){
+            card = carte;
+            return false;
+        }
+    });
+
+    card.image = loader.getResult(cardName);
+    createjs.Tween.get(card, {override:true}).to({x:position.x, y: position.y, rotation: position.rotation},100);
+    cardInTable.push(cardName);
+}
+
+function showAppel(appeller)
+{
+    hideAction();
+    $.each(players, function(x, user){
+        if(appeller == 1) {
+            if (user.isFirst == true && user.id == uid) {
+                showAction('appel');
+                return false;
+            }else if(user.isTierce == true && user.id == uid){
+                showAction('appel');
+                $('.m-appel').attr('disabled', true);
+                $('.m-appel.cr').attr('disabled', false);
+                return false;
+            }
+        }
+        if(appeller == 2){
+            if(user.isSecond == true && user.id == uid){
+                showAction('appel');
+                return false;
+            }else if(user.isLast == true && user.id == uid){
+                showAction('appel');
+                $('.m-appel').attr('disabled', 'disabled');
+                $('.m-appel.cr').attr('disabled', '');
+                return false;
+            }
+        }
+        if(appeller == 3){
+            if(user.isTierce == true && user.id == uid){
+                showAction('appel');
+                return false;
+            }else if(user.isFirst == true && user.id == uid){
+                showAction('appel');
+                $('.m-appel').attr('disabled', 'disabled');
+                $('.m-appel.cr').attr('disabled', '');
+                return false;
+            }
+        }
+        if(appeller == 4){
+            if(user.isLast == true && user.id == uid){
+                showAction('appel');
+                return false;
+            }else if(user.isSecond == true && user.id == uid){
+                showAction('appel');
+                $('.m-appel').attr('disabled', 'disabled');
+                $('.m-appel.cr').attr('disabled', '');
+                return false;
+            }
+        }
+    });
+}
+
+function appel(userId, appel, nextAppeller)
+{
+    showAppel(nextAppeller);
 }

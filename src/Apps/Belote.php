@@ -85,7 +85,8 @@ class Belote implements MessageComponentInterface
                 $this->tables[$table]['loading']++;
                 if($this->tables[$table]['loading'] >= 4){
                     $this->log($socket, "Table {$table} : Card prepared!");
-                    $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'prepareBoard', 'decks' => $this->tables[$table]['decks'])));
+                    $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doPrepareBoard', 'decks' => $this->tables[$table]['decks'])));
+                    $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doPreparetFirstToRun', 'first' => $this->tables[$table]['first'], 'splitter' => $this->tables[$table]['splitter'], 'divider' => $this->tables[$table]['divider'])));
                 }
                 break;
 			case 'game/card/split': 
@@ -94,15 +95,63 @@ class Belote implements MessageComponentInterface
 				$this->log($socket, "Table {$table} : Card splitted!");
 				$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doDivise', 'divider' => $this->tables[$table]['divider'], 'decks' => $this->tables[$table]['decks'])));
 				break;
-			case 'game/card/doDivise': 
-				$table = $socket->Session->get('table');
-				$this->partageCard($socket, $data->number, $table);
+			case 'game/card/divise':
+				$this->partageCard($socket, $data->number);
 				break;
+            case 'game/card/showAppel':
+                $table = $socket->Session->get('table');
+                $this->log($socket, "Table {$table} : Waiting for appeller {$data->appeller}");
+                $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doShowAppel', 'appeller' => $data->appeller )));
+                break;
+            case 'game/card/appel':
+                $table = $socket->Session->get('table');
+                $this->log($socket, "Table {$table} : Waiting for appeller {$data->nextAppeller}");
+                $this->prepareAppel($socket, $data->appel, $data->nextAppeller);
+                break;
+            case 'game/card/placed':
+                $this->placedCard($socket, $data->userId, $data->cardName);
+                break;
             default:
                 $this->sendToClient($socket, $msgReceived);
                 break;
         }
 
+    }
+
+    public function prepareAppel($socket, $appel, $nextAppeller)
+    {
+        $sessionUser= $socket->Session->get('user');
+        $table = $socket->Session->get('table');
+        $isContre =  0;
+        $isSurcontre =  0;
+        if($appel != 'bo'){
+            if($appel == 'cr'){
+                $cAppel = $this->tables[$table]['appel'];
+                $this->tables[$table]['appel'] = $cAppel . ' cr';
+                $isContre =  1;
+            }elseif($appel == 'sc') {
+                $cAppel = $this->tables[$table]['appel'];
+                $this->tables[$table]['appel'] = $cAppel . ' sc';
+                $isSurcontre =  1;
+            }else{
+                $this->tables[$table]['appel'] = $appel;
+            }
+        }
+
+        $this->log($socket, "Table {$table} : Player {$sessionUser->name} appelle {$appel}");
+        $this->sendToClient($socket,
+            json_encode(
+                array(
+                    'type' => 'game',
+                    'action' => 'doAppel',
+                    'userId' => $sessionUser->id,
+                    'appel' => $appel,
+                    'nextAppeller' => $nextAppeller,
+                    'isContre' => $isContre,
+                    'isSurcontre' => $isSurcontre,
+                )
+            )
+        );
     }
 
     public function onClose(ConnectionInterface $socket) {
@@ -243,10 +292,10 @@ class Belote implements MessageComponentInterface
 					if($position == 1){$firstPosition = 1; $splitter = 3; $divider = 4; $last = 2;}
                     $user = $this->tables[$table]['users'][$userId];
 					$user->position = $position;
-                    $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'addPlayer', 'userId' => $user->id, 'userName' => $user->name, 'position' => $position)));
+                    $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doAddPlayer', 'userId' => $user->id, 'userName' => $user->name, 'position' => $position)));
                     $this->log($socket, "Table {$table} : User {$user->name} join the table");
 
-                    $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'addPlayerToEquip', 'userId' => $user->id, 'equipId' => $equipId, 'position' => $position)));
+                    $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doAddPlayerToEquip', 'userId' => $user->id, 'equipId' => $equipId, 'position' => $position)));
                     $this->log($socket, "Table {$table} : User {$user->name} added to equip #{$equipId} ");
                     switch ($position){
                         case 1: $position = 3;break;
@@ -260,20 +309,21 @@ class Belote implements MessageComponentInterface
 			$this->tables[$table]['splitter'] = $splitter;
 			$this->tables[$table]['divider'] = $divider;
 			$this->tables[$table]['last'] = $last;
-			$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'setFirst', 'first' => $firstPosition, 'splitter' => $splitter, 'divider' => $divider)));
 
             //preparation de la table
             if (Table::prepareDecks($this->tables[$table])) {
                 $this->log($socket, "Table {$table} : Decks prepared and shuffled X 3 !");
-                $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'init', 'table' => $table)));
+                $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doInit', 'table' => $table)));
             }
         }catch (Exception $e){
             $this->log($socket, "(ERROR)Table {$table} : " . $e->getMessage());
         }
     }
 	
-	protected function partageCard($socket, $number, $table)
+	protected function partageCard($socket, $number)
 	{
+        $table = $socket->Session->get('table');
+
 		//check first player
 		foreach ($this->tables[$table]['users'] as $user) {
 			if($user->position == $this->tables[$table]['first']){
@@ -295,14 +345,44 @@ class Belote implements MessageComponentInterface
 			for($i = 1; $i <= $number; $i++){
 				$card = $decks[ count($decks) - 1 ];
 				$this->tables[$table]['user_cards'][$player->id][] = $card;
-				echo print_r($this->tables[$table]['user_cards'], true);
-								
+
 				$this->log($socket, "Table {$table} : Card {$card} give to {$player->name}!");
-				$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'diviseCard', 'userId' => $player->id, 'card' => $card)));
-				sleep(1);
+				$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doDiviseCard', 'userId' => $player->id, 'card' => $card)));
+				//sleep(1);
 				unset($this->tables[$table]['decks'][count($decks) - 1]);
 				$decks = $this->tables[$table]['decks'];
 			}
 		}
 	}
+
+    public function placedCard($socket, $userId, $cardName)
+    {
+        $table = $socket->Session->get('table');
+        $user =  $socket->Session->get('user');
+        $this->tables[$table]['in_table'][$userId] = $cardName; //add carte to the table
+        //remove card from the user
+        foreach($this->tables[$table]['user_cards'][$userId] as $k => $carte){
+            if($carte == $cardName){
+                unset($this->tables[$table]['user_cards'][$userId][$k]);
+                break;
+            }
+        }
+
+        $userPosition = $this->tables[$table]['users'][$userId]->position;
+        $this->log($socket, "Table {$table} : Card {$cardName} placed by {$user->name}!");
+        $this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doPlacedCard', 'userPosition' => $userPosition, 'userId' => $userId, 'cardName' => $cardName)));
+
+        //si tous les 4 cartes sont sur la table
+        if( count($this->tables[$table]['in_table']) >= 4 ){
+            $this->checkWinCard($socket);
+        }
+
+    }
+
+    public function checkWinCard($socket)
+    {
+        $table = $socket->Session->get('table');
+        $winnerUserId = Table::checkWinCard($this->tables[$table]);
+        $this->log($socket, "Table {$table} : Winner card : {$winnerUserId} !!!");
+    }
 }

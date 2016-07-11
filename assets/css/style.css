@@ -91,3 +91,22 @@ body{
 .av-m3{background-image: url('../images/avatar/m3.png');}
 .av-m4{ background-image: url('../images/avatar/m4.png');}
 .av-noname{background-image: url('../images/avatar/noname.png');}
+
+#game-wrapper{
+    position: relative;
+}
+
+#actions{
+    position: absolute;
+    top:50%;
+    left: 50%;
+}
+
+.appel ul{
+    list-style: none;
+    clear: both;
+}
+
+.appel li {
+    float: left;
+}

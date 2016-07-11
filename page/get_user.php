@@ -11,6 +11,7 @@ $users = array(
     array('3', 'heri3'),
     array('4', 'heri4'),
     array('5', 'heri5'),
+    array('6', 'nampoina'),
 );
 
 $html = "FALSE";

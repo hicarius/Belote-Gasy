@@ -69,28 +69,36 @@ if( ($session->get('in_table') == 1 && $session->get('table') == $_GET['r']) == 
                                 case 'quit':
                                     document.location.href = '/room';
                                     break;
-                                case 'addPlayer':
+                                case 'doAddPlayer':
                                     addPlayer(data.userId, data.userName, data.position);
-                                    console.log(players);
                                     break;
-                                case 'addPlayerToEquip':
+                                case 'doAddPlayerToEquip':
                                     addPlayerToEquip(data.userId, data.equipId, data.position);
                                     break;
-                                case 'init':
+                                case 'doInit':
                                     initGame();
                                     break;
-                                case 'prepareBoard':
+                                case 'doPrepareBoard':
                                     prepareBord(data.decks);
                                     break;
-								case 'setFirst':
+								case 'doPreparetFirstToRun':
                                     checkFirstToRun(data.first, data.divider, data.splitter);
                                     break;
 								case 'doDivise':
                                     checkDiviseAction(data.decks, data.divider);
                                     break;
-								case 'diviseCard':
+                                case 'doDiviseCard':
                                     diviseCard(data.userId, data.card);
-                                    break;									
+                                    break;
+                                case 'doPlacedCard':
+                                    placedCard(data.userId, data.userPosition, data.cardName);
+                                    break;
+                                case 'doShowAppel':
+                                    showAppel(data.appeller);
+                                    break;
+                                case 'doAppel':
+                                    appel(data.userId, data.appel, data.nextAppeller);
+                                    break;
                             }
                             break;
                     }
@@ -101,10 +109,30 @@ if( ($session->get('in_table') == 1 && $session->get('table') == $_GET['r']) == 
     </head>
     <body onload="">
         <div id="console"></div>
-        <canvas id="card-canvas" width="800" height="600"></canvas>
-        <div id="actions" class="action">
-            <input type="button" class="splitter" value="Couper" style="display:none;" />
-			<input type="button" class="divider" value="Partager" style="display:none;" />
+        <div id="game-wrapper">
+            <canvas id="card-canvas" width="800" height="600"></canvas>
+            <div id="actions" class="action">
+                <input type="button" class="splitter" value="Couper" style="display:none;" />
+                <input type="button" class="divider-1" value="Partager" style="display:none;" />
+                <input type="button" class="divider-2" value="Partager" style="display:none;" />
+                <div class="appel" style="display:none;">
+                    <ul>
+                        <li><input type="button" class="m-appel tr" value="Treffle"></li>
+                        <li><input type="button" class="m-appel ca" value="Carreau"></li>
+                        <li><input type="button" class="m-appel co" value="Coeur"></li>
+                        <li><input type="button" class="m-appel pi" value="Pique"></li>
+                    </ul>
+                    <ul>
+                        <li><input type="button" class="m-appel as" value="Sans As"></li>
+                        <li><input type="button" class="m-appel at" value="Tout As"></li>
+                    </ul>
+                    <ul>
+                        <li><input type="button" class="m-appel bo" value="Bonne"></li>
+                        <li><input type="button" class="m-appel cr" value="Contré"></li>
+                        <li><input type="button" disabled="disabled" class="m-appel sc" value="Surcontré"></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </body>
 </html>
