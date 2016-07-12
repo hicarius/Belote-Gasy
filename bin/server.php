@@ -4,7 +4,7 @@ use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 use Ratchet\Session\SessionProvider;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler;
-use Apps\Belote;
+use Apps\Server;
 
 # Get database connection.
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -27,7 +27,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $pdoSessionHandler = new Handler\PdoSessionHandler($pdo, $options);
 $pdoSessionHandler->createTable();
 
-$session = new SessionProvider(new Belote(), $pdoSessionHandler);
+$session = new SessionProvider(new Server(), $pdoSessionHandler);
 
 $server = IoServer::factory(
     new HttpServer(

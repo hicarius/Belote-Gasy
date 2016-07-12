@@ -84,21 +84,37 @@ if( ($session->get('in_table') == 1 && $session->get('table') == $_GET['r']) == 
 								case 'doPreparetFirstToRun':
                                     checkFirstToRun(data.first, data.divider, data.splitter);
                                     break;
+                                case 'showSplit':
+                                    showSplitBlock();
+                                    break;
 								case 'doDivise':
-                                    checkDiviseAction(data.decks, data.divider);
+                                    checkDiviseAction(data.decks);
+                                    break;
+                                case 'showDivise':
+                                    showDiviseBlock();
                                     break;
                                 case 'doDiviseCard':
-                                    diviseCard(data.userId, data.card);
+                                    diviseCard(data.userId, data.card, data.nextPlayerToPartageCard);
                                     break;
                                 case 'doPlacedCard':
                                     placedCard(data.userId, data.userPosition, data.cardName);
                                     break;
-                                case 'doShowAppel':
-                                    showAppel(data.appeller);
+                                case 'clearAction':
+                                    hideAction();
+                                    break;
+                                case 'showAppel':
+                                    showAppelBlock(data.inputToEnabled);
                                     break;
                                 case 'doAppel':
                                     appel(data.userId, data.appel, data.nextAppeller);
                                     break;
+                                case 'removeInTable':
+                                    removeInTable(data.winnerPosition);
+                                    break;
+                                case 'showScore':
+                                    showScore(data.e1, data.e2);
+                                    break;
+
                             }
                             break;
                     }
@@ -113,8 +129,8 @@ if( ($session->get('in_table') == 1 && $session->get('table') == $_GET['r']) == 
             <canvas id="card-canvas" width="800" height="600"></canvas>
             <div id="actions" class="action">
                 <input type="button" class="splitter" value="Couper" style="display:none;" />
-                <input type="button" class="divider-1" value="Partager" style="display:none;" />
-                <input type="button" class="divider-2" value="Partager" style="display:none;" />
+                <input type="button" class="divider-2" value="Partage en 2 cartes" style="display:none;" />
+                <input type="button" class="divider-3" value="Partage en 3 cartes" style="display:none;" />
                 <div class="appel" style="display:none;">
                     <ul>
                         <li><input type="button" class="m-appel tr" value="Treffle"></li>
@@ -123,8 +139,8 @@ if( ($session->get('in_table') == 1 && $session->get('table') == $_GET['r']) == 
                         <li><input type="button" class="m-appel pi" value="Pique"></li>
                     </ul>
                     <ul>
-                        <li><input type="button" class="m-appel as" value="Sans As"></li>
-                        <li><input type="button" class="m-appel at" value="Tout As"></li>
+                        <li><input type="button" class="m-appel sa" value="Sans As"></li>
+                        <li><input type="button" class="m-appel ta" value="Tout As"></li>
                     </ul>
                     <ul>
                         <li><input type="button" class="m-appel bo" value="Bonne"></li>

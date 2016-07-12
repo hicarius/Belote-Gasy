@@ -3,14 +3,18 @@ var w, h, loader;
 
 var cards = []; //les cartes
 var decks = []; //pli des cartes
-var scores = []; //tableau des scores
+var scores = [], score_1, score_2; //tableau des scores
 var cardInTable = []; //les 4 cartes sur table
 
 var players = []; //les cartes de joueur 1
 var equips =  [[], []]; //les cartes de joueur 1
 
-var randPlayer = []; //pour savoir la main
-var currentFirstPlayer = 0;
+var decks_equip1, decks_equip2; //les plis
+
+var randPlayer = []; //pour savoir la main //reset à chaque partie
+
+var currentPlayerToPartageCard = 1, playerToPartageCard = 1; //reset à chaque partie
+var numberCardFirst = 0, numberCardSecond = 0, numberCardTierce = 0, numberCardLast = 0; //reset à chaque partie
 
 var playingDeck = {color: 'blue', number: 5}; //carte à jouer
 var p_deck, firstBoard; //position du deck
@@ -39,6 +43,7 @@ function initGame()
 		{src: "images/first.png", id: "first"},
         {src: "images/player-bg.png", id: "player-bg"},
         {src: "sound/cardPlace1.mp3", id: "cardPlace"},
+        {src: "sound/cardSlide1.mp3", id: "cardSlide"},
     ];
 
     //load all card
@@ -85,6 +90,10 @@ function preparePosition()
     po_card = {x: 75, y: 185, rotation: 50};
     po_card_table = {x: 300, y: 225, rotation: 0 };
 	po_first_palette = {x: 6,y: 272};
+
+    //position du pli
+    decks_equip1 = {x: 200, y: 50, rotation:0};
+    decks_equip2 = {x: 150, y: 385, rotation: 90};
 
     var equiPlayer = 0;
     $.each(equips, function(equipId, users){
@@ -160,6 +169,10 @@ function prepareBord(deckData)
         cards[item] = card;
 		decks.push(card);
     });
+
+    //create affichage score
+    score_1 = easelJsUtils.createText("E1 : 0/1500", {font: "14px Arial", x:700, y:20});
+    score_2 = easelJsUtils.createText("E1 : 0/1500", {font: "14px Arial", x:700, y:40});
 
     //create screen
     var bg_n = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:357.5, y:-27.75}, 'bg_n');
@@ -237,11 +250,9 @@ function checkFirstToRun(first, divider, splitter)
             user.isTierce = false;
             user.isLast = false;
         }
-	});	
-	
-	if(uid == u_splitter.id){
-		showAction('splitter');
-	}
+	});
+
+
 }
 
 function showAction(action)
@@ -251,11 +262,8 @@ function showAction(action)
         case 'splitter':
             $('.action .splitter').show();
             break;
-        case 'divider-1':
-            $('.action .divider-1').show();
-            break;
-        case 'divider-2':
-            $('.action .divider-2').show();
+        case 'divider':
+            $('.action .divider-2,.action .divider-3 ').show();
             break;
         case 'appel':
             $('.action .appel').show();
@@ -269,35 +277,35 @@ function showAction(action)
 function hideAction()
 {
     $('#actions').hide();
-    $('.splitter, .divider-1, .divider-2, .appel').hide();
+    $('.splitter, .divider-2, .divider-3, .appel').hide();
 }
 
-function checkDiviseAction(deckData, dividerPosition)
+function checkDiviseAction(deckData)
 {
 	//suppression d'ancien decks
 	decks = [];
-	
     //create decks	
     $.each( deckData, function(i, item){
         decks.push(cards[item]);
-    });	
-	
-	$.each(players, function(x, user){
-		if(user.position == dividerPosition){
-			u_divider = user;
-			return false;
-		}
-	});
-
-    hideAction();
-	if(uid == u_divider.id){
-		showAction('divider-1');
-	}
+    });
 }
 
-function diviseCard(userId, cardName)
+function showSplitBlock()
+{
+    hideAction();
+    showAction('splitter');
+}
+
+function showDiviseBlock()
+{
+    hideAction();
+    showAction('divider');
+}
+
+function diviseCard(userId, cardName, nextPlayerToPartageCard)
 {
 	var player;
+
 	$.each(players, function(x, user){
 		if(user.id == userId){
 			player = user;
@@ -360,6 +368,8 @@ function diviseCard(userId, cardName)
     newIndex ++;
 
 	stage.setChildIndex(card, newIndex);
+
+    currentPlayerToPartageCard = nextPlayerToPartageCard;
 }
 
 function placedCard(userId, userPosition, cardName)
@@ -387,63 +397,60 @@ function placedCard(userId, userPosition, cardName)
         }
     });
 
+    createjs.Sound.play("cardSlide");
     card.image = loader.getResult(cardName);
     createjs.Tween.get(card, {override:true}).to({x:position.x, y: position.y, rotation: position.rotation},100);
-    cardInTable.push(cardName);
+    cardInTable.push(card);
 }
 
-function showAppel(appeller)
+function showAppelBlock(inputToEnabled)
 {
     hideAction();
-    $.each(players, function(x, user){
-        if(appeller == 1) {
-            if (user.isFirst == true && user.id == uid) {
-                showAction('appel');
-                return false;
-            }else if(user.isTierce == true && user.id == uid){
-                showAction('appel');
-                $('.m-appel').attr('disabled', true);
-                $('.m-appel.cr').attr('disabled', false);
-                return false;
-            }
-        }
-        if(appeller == 2){
-            if(user.isSecond == true && user.id == uid){
-                showAction('appel');
-                return false;
-            }else if(user.isLast == true && user.id == uid){
-                showAction('appel');
-                $('.m-appel').attr('disabled', 'disabled');
-                $('.m-appel.cr').attr('disabled', '');
-                return false;
-            }
-        }
-        if(appeller == 3){
-            if(user.isTierce == true && user.id == uid){
-                showAction('appel');
-                return false;
-            }else if(user.isFirst == true && user.id == uid){
-                showAction('appel');
-                $('.m-appel').attr('disabled', 'disabled');
-                $('.m-appel.cr').attr('disabled', '');
-                return false;
-            }
-        }
-        if(appeller == 4){
-            if(user.isLast == true && user.id == uid){
-                showAction('appel');
-                return false;
-            }else if(user.isSecond == true && user.id == uid){
-                showAction('appel');
-                $('.m-appel').attr('disabled', 'disabled');
-                $('.m-appel.cr').attr('disabled', '');
-                return false;
-            }
-        }
+    showAction('appel');
+    $('.m-appel').attr('disabled', true);
+
+    $.each(inputToEnabled, function(i, inputClass){
+        $('.m-appel.' + inputClass).attr('disabled', false);
     });
 }
 
 function appel(userId, appel, nextAppeller)
 {
     showAppel(nextAppeller);
+}
+
+function removeInTable(winnerPosition)
+{
+    if(winnerPosition == 1 || winnerPosition == 3){
+        position = decks_equip1;
+    }else{
+        position = decks_equip2;
+    }
+
+    $.each(cardInTable, function(x, card){
+        card.image = loader.getResult('back');
+        createjs.Tween.get(card, {override:true}).to({x:position.x, y: position.y, rotation: position.rotation},100);
+    });
+    cardInTable = [];
+}
+
+function showScore(e1, e2)
+{
+    score_1.text = "E1 : " + e1 + "/1500";
+    score_2.text = "E2 : " + e2 + "/1500";
+
+    preparePosition();
+
+    $.each(decks, function(x, card){
+        createjs.Tween.get(card, {override:true}).to({x:p_deck.x, y: p_deck.y, rotation: 0},100);
+    });
+
+    switch (playerToPartageCard){
+        case 1: currentPlayerToPartageCard = 2; playerToPartageCard = 2; break;
+        case 2: currentPlayerToPartageCard = 3; playerToPartageCard = 3; break;
+        case 3: currentPlayerToPartageCard = 4; playerToPartageCard = 4; break;
+        case 4: currentPlayerToPartageCard = 1; playerToPartageCard = 1; break;
+    }
+    numberCardFirst = 0; numberCardSecond = 0; numberCardTierce = 0; numberCardLast = 0;
+    newIndex = 100;
 }
