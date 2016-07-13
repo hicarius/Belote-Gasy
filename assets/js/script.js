@@ -41,6 +41,8 @@ function initGame()
     var manifest = [
         {src: "images/back.png", id: "back"},
 		{src: "images/first.png", id: "first"},
+        {src: "images/bar-button.png", id: "bar-button"},
+        {src: "images/first.png", id: "first"},
         {src: "images/player-bg.png", id: "player-bg"},
         {src: "sound/cardPlace1.mp3", id: "cardPlace"},
         {src: "sound/cardSlide1.mp3", id: "cardSlide"},
@@ -203,6 +205,9 @@ function prepareBord(deckData)
 
     firstBoard = easelJsUtils.createBitmap(loader.getResult('first'), {x: 0, y: 0}, 'first');
     firstBoard.mouseEnabled = false;
+
+    easelJsUtils.createBitmap(loader.getResult('bar-button'), {x:80, y:560}, 'bar_button');
+    
 	websocket.send( JSON.stringify({type: "game/card/prepareSplit"}));
 };
 
