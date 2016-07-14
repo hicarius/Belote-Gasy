@@ -14,7 +14,7 @@ var decks_equip1, decks_equip2; //les plis
 var randPlayer = []; //pour savoir la main //reset à chaque partie
 
 var currentPlayerToPartageCard = 1, playerToPartageCard = 1; //reset à chaque partie
-var prevKey = 0, numberCardPerUser = 0, numberCardFirst = 0, numberCardSecond = 0, numberCardTierce = 0, numberCardLast = 0; //reset à chaque partie
+var numberCardFirst = 0, numberCardSecond = 0, numberCardTierce = 0, numberCardLast = 0; //reset à chaque partie
 
 var playingDeck = {color: 'blue', number: 5}; //carte à jouer
 var p_deck, firstBoard; //position du deck
@@ -107,15 +107,15 @@ function preparePosition()
     ps_card = {x: (w/2) - 52.5 - 200, y:500};
     ps_card_table = {x: 370, y: 275, rotation: 0 };
 	ps_first_palette = {x: 98,y: 552};
-    ps_card_single = [
-        {x:300, y:580, rotation:180, scale:[1.3, 1.3]},
-        {x:350, y:580, rotation:180, scale:[1.3, 1.3]},
-        {x:400, y:580, rotation:180, scale:[1.3, 1.3]},
-        {x:450, y:580, rotation:180, scale:[1.3, 1.3]},
-        {x:500, y:580, rotation:180, scale:[1.3, 1.3]},
-        {x:550, y:580, rotation:180, scale:[1.3, 1.3]},
-        {x:600, y:580, rotation:180, scale:[1.3, 1.3]},
-        {x:650, y:580, rotation:180, scale:[1.3, 1.3]},
+    ps_card_single = [		
+		{x:250, y:580, rotation:180, scale:[1.1, 1.1]},
+        {x:300, y:580, rotation:180, scale:[1.1, 1.1]},
+        {x:350, y:580, rotation:180, scale:[1.1, 1.1]},
+        {x:400, y:580, rotation:180, scale:[1.1, 1.1]},
+        {x:450, y:580, rotation:180, scale:[1.1, 1.1]},
+        {x:500, y:580, rotation:180, scale:[1.1, 1.1]},
+        {x:550, y:580, rotation:180, scale:[1.1, 1.1]},
+		{x:600, y:580, rotation:180, scale:[1.1, 1.1]},
     ];
 
     //ouest
@@ -253,7 +253,7 @@ function prepareBord(deckData)
 
 function addPlayer(userId, name, position)
 {
-    players.push({id: userId, position: position, orientation:'', name: name, cards: [], x : 0, y: 0});
+    players.push({id: userId, position: position, numberCard: 0, orientation:'', name: name, cards: [], x : 0, y: 0});
 }
 
 function addPlayerToEquip(userId, equipId)
@@ -349,22 +349,16 @@ function showDiviseBlock()
 
 function diviseCard(userId, cardName, nextPlayerToPartageCard)
 {
-	var player;
-
-    var key;
-    if(numberCardPerUser%4 == 0) {
-        key = (numberCardPerUser/4);
-        prevKey = key;
-    }else {
-        key = prevKey;
-    }
+	var player, key = 0;
 
 	$.each(players, function(x, user){
 		if(user.id == userId){
 			player = user;
+			key = user.numberCard;
+			user.numberCard++;
 			return false;
 		}
-	});
+	});	
 	
 	var card;
 	$.each(decks, function(x, carte){
@@ -386,7 +380,6 @@ function diviseCard(userId, cardName, nextPlayerToPartageCard)
 			createjs.Tween.get(card, {override:true}).to({x: pe_card_single[key].x, y: pe_card_single[key].y, rotation: pe_card_single[key].rotation},500);
 			break;
 		case 's' :
-            console.log(card);
 			createjs.Tween.get(card, {override:true}).to({x:ps_card_single[key].x, y: ps_card_single[key].y, rotation: ps_card_single[key].rotation, scaleX: ps_card_single[key].scale[0], scaleY: ps_card_single[key].scale[1]},500);
 			card.mouseEnabled = true;
 			card.image = loader.getResult(card.name);
@@ -408,9 +401,7 @@ function diviseCard(userId, cardName, nextPlayerToPartageCard)
             card.mouseEnabled = false;
 			createjs.Tween.get(card, {override:true}).to({x: po_card_single[key].x, y: po_card_single[key].y, rotation: po_card_single[key].rotation},500);
 			break;
-	}
-
-    numberCardPerUser++;
+	}    
 
 	//on ajoute dans la main du joueur
 	createjs.Sound.play("cardPlace");
@@ -493,6 +484,10 @@ function showScore(e1, e2)
 
     $.each(decks, function(x, card){
         createjs.Tween.get(card, {override:true}).to({x:p_deck.x, y: p_deck.y, rotation: 0},100);
+    });
+	
+	$.each(players, function(x, user){
+        user.numberCard = 0;
     });
 
     switch (playerToPartageCard){

@@ -35,15 +35,12 @@ $(function(){
         }
     });
 
-    $('body').on('click', '.divider-3', function(){
-        
-        setTimeout(function() {
-            websocket.send(JSON.stringify({
-                type: "game/card/divise",
-                number: 1,
-                userPosition: currentPlayerToPartageCard
-            }));
-        }, 500);
+    $('body').on('click', '.divider-3', function(){        
+		websocket.send(JSON.stringify({
+			type: "game/card/divise",
+			number: 3,
+			userPosition: currentPlayerToPartageCard
+		}));
 
         switch (currentPlayerToPartageCard){
             case 1: numberCardFirst += 3; break;
