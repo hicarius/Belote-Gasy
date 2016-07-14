@@ -111,6 +111,16 @@
             return txt;
         },
 
+        createDOMElement: function(htmlElement, options) {
+            var dom = new createjs.DOMElement(htmlElement);
+            //dom.htmlElement = htmlElement;
+            dom.x = options.x;
+            dom.y = options.y;
+
+            this.stage.addChild(dom);
+            return dom;
+        },
+
         /**
          * Dessiner un rectangle avec coins arrondis
          * @param Number x : position x de la forme

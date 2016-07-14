@@ -14,14 +14,14 @@ var decks_equip1, decks_equip2; //les plis
 var randPlayer = []; //pour savoir la main //reset à chaque partie
 
 var currentPlayerToPartageCard = 1, playerToPartageCard = 1; //reset à chaque partie
-var numberCardFirst = 0, numberCardSecond = 0, numberCardTierce = 0, numberCardLast = 0; //reset à chaque partie
+var prevKey = 0, numberCardPerUser = 0, numberCardFirst = 0, numberCardSecond = 0, numberCardTierce = 0, numberCardLast = 0; //reset à chaque partie
 
 var playingDeck = {color: 'blue', number: 5}; //carte à jouer
 var p_deck, firstBoard; //position du deck
 var ps_card, pn_card, pe_card, po_card; //position du carte des joueur (sud, nord, est, oeust)
 var ps_card_table, pn_card_table, pe_card_table, po_card_table; //position du carte des joueur dur table  (sud, nord, est, oeust)
 
-var newIndex = 100;
+var newIndex = 0;
 
 // Fonction d'initialisation
 function initGame()
@@ -70,28 +70,68 @@ function initGame()
 function preparePosition()
 {
     //position du deck
-    p_deck = {x: w/2 - 50, y: h/2 - 60};
+    p_deck = {x: 373, y: 240};
 
     //position des cartes des joueurs
     //nord
     pn_card = {x: 375, y: - 10, rotation: 40};
     pn_card_table = {x: 370, y: 175, rotation: 0 };
-	pn_first_palette = {x: 385,y: 15};
+	pn_first_palette = {x: 420,y: 5};
+    pn_card_single = [
+        {x:390, y:25, rotation:90},
+        {x:387, y:35, rotation:80},
+        {x:385, y:40, rotation:65},
+        {x:383, y:45, rotation:50},
+        {x:375, y:50, rotation:25},
+        {x:380, y:60, rotation:5},
+        {x:475, y:135, rotation:160},
+        {x:500, y:100, rotation:135},
+    ];
 
     //est
     pe_card =  {x: 780, y: 240, rotation: 130};
     pe_card_table = {x: 440, y: 225, rotation: 0 };
-	pe_first_palette = {x: 757,y: 272};
+	pe_first_palette = {x: 757,y: 220};
+    pe_card_single = [
+        {x:720, y:180, rotation:0},
+        {x:775, y:265, rotation:165},
+        {x:765, y:264, rotation:155},
+        {x:760, y:257, rotation:135},
+        {x:755, y:255, rotation:115},
+        {x:748, y:255, rotation:95},
+        {x:735, y:255, rotation:70},
+        {x:730, y:265, rotation:45},
+    ];
 
     //sud = joueur
     ps_card = {x: (w/2) - 52.5 - 200, y:500};
     ps_card_table = {x: 370, y: 275, rotation: 0 };
-	ps_first_palette = {x: 385,y: 560};
+	ps_first_palette = {x: 98,y: 552};
+    ps_card_single = [
+        {x:300, y:580, rotation:180, scale:[1.3, 1.3]},
+        {x:350, y:580, rotation:180, scale:[1.3, 1.3]},
+        {x:400, y:580, rotation:180, scale:[1.3, 1.3]},
+        {x:450, y:580, rotation:180, scale:[1.3, 1.3]},
+        {x:500, y:580, rotation:180, scale:[1.3, 1.3]},
+        {x:550, y:580, rotation:180, scale:[1.3, 1.3]},
+        {x:600, y:580, rotation:180, scale:[1.3, 1.3]},
+        {x:650, y:580, rotation:180, scale:[1.3, 1.3]},
+    ];
 
     //ouest
     po_card = {x: 75, y: 185, rotation: 50};
     po_card_table = {x: 300, y: 225, rotation: 0 };
-	po_first_palette = {x: 6,y: 272};
+	po_first_palette = {x: 5,y: 220};
+    po_card_single = [
+        {x:25, y:275, rotation:0},
+        {x:110, y:358, rotation:170},
+        {x:135, y:340, rotation:155},
+        {x:155, y:312, rotation:135},
+        {x:165, y:280, rotation:120},
+        {x:165, y:240, rotation:100},
+        {x:148, y:200, rotation:75},
+        {x:120, y:167, rotation:55},
+    ];
 
     //position du pli
     decks_equip1 = {x: 200, y: 50, rotation:0};
@@ -167,28 +207,28 @@ function prepareBord(deckData)
 {
     //create decks
     $.each( deckData, function(i, item){
-        var card = easelJsUtils.createCard(loader.getResult(item), {x: p_deck.x, y: p_deck.y}, item);
+        var card = easelJsUtils.createCard(loader.getResult('back'), {x: p_deck.x, y: p_deck.y}, item);
         cards[item] = card;
 		decks.push(card);
     });
 
     //create affichage score
     score_1 = easelJsUtils.createText("E1 : 0/1500", {font: "14px Arial", x:700, y:20});
-    score_2 = easelJsUtils.createText("E1 : 0/1500", {font: "14px Arial", x:700, y:40});
+    score_2 = easelJsUtils.createText("E2 : 0/1500", {font: "14px Arial", x:700, y:40});
 
     //create screen
-    var bg_n = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:357.5, y:-27.75}, 'bg_n');
+    var bg_n = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:357.5, y:0}, 'bg_n');
 	bg_n.mouseEnabled = false;
-    var text_n = easelJsUtils.createText("", {font: "14px Arial", x:bg_n.x + 25, y:bg_n.y+30});    
+    var text_n = easelJsUtils.createText("", {color: "#FFF", font: "15px Arial", x:387, y:77});
 	
-    var bg_o = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:-22.75, y:225}, 'bg_o');
+    var bg_o = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:0, y:225}, 'bg_o');
     bg_o.mouseEnabled = false;
-	var text_o = easelJsUtils.createText("", {font: "14px Arial", x:bg_o.x + 25, y:bg_o.y+30});
-	
-    var bg_e = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:725, y:225}, 'bg_e');
+	var text_o = easelJsUtils.createText("", {color: "#FFF", font: "15px Arial", x:29, y:302});
+
+    var bg_e = easelJsUtils.createBitmap(loader.getResult('player-bg'), {x:700, y:225}, 'bg_e');
     bg_e.mouseEnabled = false;
-	var text_e = easelJsUtils.createText("", {font: "14px Arial", x:bg_e.x + 25, y:bg_e.y+30});
-	
+	var text_e = easelJsUtils.createText("", {color: "#FFF", font: "15px Arial", x:729, y:302});
+
 	$.each(players, function(x, user){
 		switch (user.orientation){
 			case 'n':
@@ -203,11 +243,11 @@ function prepareBord(deckData)
 		}
 	});
 
+    easelJsUtils.createBitmap(loader.getResult('bar-button'), {x:80, y:560}, 'bar_button');
+
     firstBoard = easelJsUtils.createBitmap(loader.getResult('first'), {x: 0, y: 0}, 'first');
     firstBoard.mouseEnabled = false;
 
-    easelJsUtils.createBitmap(loader.getResult('bar-button'), {x:80, y:560}, 'bar_button');
-    
 	websocket.send( JSON.stringify({type: "game/card/prepareSplit"}));
 };
 
@@ -311,6 +351,14 @@ function diviseCard(userId, cardName, nextPlayerToPartageCard)
 {
 	var player;
 
+    var key;
+    if(numberCardPerUser%4 == 0) {
+        key = (numberCardPerUser/4);
+        prevKey = key;
+    }else {
+        key = prevKey;
+    }
+
 	$.each(players, function(x, user){
 		if(user.id == userId){
 			player = user;
@@ -326,29 +374,27 @@ function diviseCard(userId, cardName, nextPlayerToPartageCard)
 		}
 	});
 
+    card.key = key;
+
 	switch (player.orientation){
 		case 'n' :
             card.mouseEnabled = false;
-			createjs.Tween.get(card, {override:true}).to({x: player.x, y: player.y, rotation: player.rotation},500);
-			player.x += 10;
-			player.rotation -= 10;
+			createjs.Tween.get(card, {override:true}).to({x: pn_card_single[key].x, y: pn_card_single[key].y, rotation: pn_card_single[key].rotation},500);
 			break;
 		case 'e' :
             card.mouseEnabled = false;
-			createjs.Tween.get(card, {override:true}).to({x: player.x, y: player.y, rotation: player.rotation},500);
-			player.x += 2;
-            player.y += 10;
-			player.rotation -= 10;
+			createjs.Tween.get(card, {override:true}).to({x: pe_card_single[key].x, y: pe_card_single[key].y, rotation: pe_card_single[key].rotation},500);
 			break;
 		case 's' :
-			createjs.Tween.get(card, {override:true}).to({x:player.x, y: player.y},500);
+            console.log(card);
+			createjs.Tween.get(card, {override:true}).to({x:ps_card_single[key].x, y: ps_card_single[key].y, rotation: ps_card_single[key].rotation, scaleX: ps_card_single[key].scale[0], scaleY: ps_card_single[key].scale[1]},500);
 			card.mouseEnabled = true;
 			card.image = loader.getResult(card.name);
 			card.addEventListener("mouseover", function(event) {
-				createjs.Tween.get(card, {override:true}).to({x:card.x, y: ps_card.y - 20},100);
+				createjs.Tween.get(card, {override:true}).to({x:ps_card_single[card.key].x, y: ps_card_single[card.key].y - 20},100);
 			});
 			card.addEventListener("mouseout", function(event) {
-				createjs.Tween.get(card, {override:true}).to({x:card.x, y: ps_card.y},100);
+				createjs.Tween.get(card, {override:true}).to({x:ps_card_single[card.key].x, y: ps_card_single[card.key].y},100);
 			});
 			card.addEventListener("click", function(event) {
 				card.mouseEnabled = false;
@@ -356,17 +402,16 @@ function diviseCard(userId, cardName, nextPlayerToPartageCard)
                 websocket.send(JSON.stringify({type: "game/card/placed", userId: uid, cardName: card.name}));
 
 			});
-			player.x += 60;
+			//player.x += 60;
 			break;
 		case 'o' :
             card.mouseEnabled = false;
-			createjs.Tween.get(card, {override:true}).to({x: player.x, y: player.y, rotation: player.rotation},500);
-			player.y += 20;
-            if(player.x<=100)player.x += 25;
-			player.rotation += 10;
+			createjs.Tween.get(card, {override:true}).to({x: po_card_single[key].x, y: po_card_single[key].y, rotation: po_card_single[key].rotation},500);
 			break;
 	}
-	
+
+    numberCardPerUser++;
+
 	//on ajoute dans la main du joueur
 	createjs.Sound.play("cardPlace");
 	//on modifie l'index
@@ -404,7 +449,7 @@ function placedCard(userId, userPosition, cardName)
 
     createjs.Sound.play("cardSlide");
     card.image = loader.getResult(cardName);
-    createjs.Tween.get(card, {override:true}).to({x:position.x, y: position.y, rotation: position.rotation},100);
+    createjs.Tween.get(card, {override:true}).to({x:position.x, y: position.y, rotation: position.rotation, scaleX: 1, sacleY: 1},100);
     cardInTable.push(card);
 }
 
@@ -457,5 +502,5 @@ function showScore(e1, e2)
         case 4: currentPlayerToPartageCard = 1; playerToPartageCard = 1; break;
     }
     numberCardFirst = 0; numberCardSecond = 0; numberCardTierce = 0; numberCardLast = 0;
-    newIndex = 100;
+    newIndex = 1;
 }
