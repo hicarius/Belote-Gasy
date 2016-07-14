@@ -405,7 +405,7 @@ class Server implements MessageComponentInterface
 			$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doDiviseCard', 'userId' => $player->id, 'card' => $card, 'nextPlayerToPartageCard' => $nextPlayerToPartageCard)));
 			unset($this->tables[$table]['decks'][count($decks) - 1]);
 			$decks = $this->tables[$table]['decks'];
-			sleep(1);
+			//sleep(1);
 		}
 
 	}
