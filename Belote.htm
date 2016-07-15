@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <title>Belote</title>
+<style>
+html,body{overflow:hidden;margin:0;padding:0;height:100%;font-family:Segoe UI,Verdana,Arial,Sans-Serif;color:#fff;font-size:x-large}
+canvas {position:absolute;width:100%;height:100%;background-color:#063;overflow:hidden;cursor:pointer;}
+</style>
+<style class="firebugResetStyles" type="text/css" charset="utf-8">/* See license.txt for terms of usage */
+/** reset styling **/
+.firebugResetStyles {
+    z-index: 2147483646 !important;
+    top: 0 !important;
+    left: 0 !important;
+    display: block !important;
+    border: 0 none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    outline: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    position: fixed !important;
+    transform: rotate(0deg) !important;
+    transform-origin: 50% 50% !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: transparent none !important;
+    pointer-events: none !important;
+    white-space: normal !important;
+}
+style.firebugResetStyles {
+    display: none !important;
+}
+
+.firebugBlockBackgroundColor {
+    background-color: transparent !important;
+}
+
+.firebugResetStyles:before, .firebugResetStyles:after {
+    content: "" !important;
+}
+/**actual styling to be modified by firebug theme**/
+.firebugCanvas {
+    display: none !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.firebugLayoutBox {
+    width: auto !important;
+    position: static !important;
+}
+
+.firebugLayoutBoxOffset {
+    opacity: 0.8 !important;
+    position: fixed !important;
+}
+
+.firebugLayoutLine {
+    opacity: 0.4 !important;
+    background-color: #000000 !important;
+}
+
+.firebugLayoutLineLeft, .firebugLayoutLineRight {
+    width: 1px !important;
+    height: 100% !important;
+}
+
+.firebugLayoutLineTop, .firebugLayoutLineBottom {
+    width: 100% !important;
+    height: 1px !important;
+}
+
+.firebugLayoutLineTop {
+    margin-top: -1px !important;
+    border-top: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineRight {
+    border-right: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineBottom {
+    border-bottom: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineLeft {
+    margin-left: -1px !important;
+    border-left: 1px solid #999999 !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.firebugLayoutBoxParent {
+    border-top: 0 none !important;
+    border-right: 1px dashed #E00 !important;
+    border-bottom: 1px dashed #E00 !important;
+    border-left: 0 none !important;
+    position: fixed !important;
+    width: auto !important;
+}
+
+.firebugRuler{
+    position: absolute !important;
+}
+
+.firebugRulerH {
+    top: -15px !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 14px !important;
+    background: url("data:image/png,%89PNG%0D%0A%1A%0A%00%00%00%0DIHDR%00%00%13%88%00%00%00%0E%08%02%00%00%00L%25a%0A%00%00%00%04gAMA%00%00%D6%D8%D4OX2%00%00%00%19tEXtSoftware%00Adobe%20ImageReadyq%C9e%3C%00%00%04%F8IDATx%DA%EC%DD%D1n%E2%3A%00E%D1%80%F8%FF%EF%E2%AF2%95%D0D4%0E%C1%14%B0%8Fa-%E9%3E%CC%9C%87n%B9%81%A6W0%1C%A6i%9A%E7y%0As8%1CT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AATE9%FE%FCw%3E%9F%AF%2B%2F%BA%97%FDT%1D~K(%5C%9D%D5%EA%1B%5C%86%B5%A9%BDU%B5y%80%ED%AB*%03%FAV9%AB%E1%CEj%E7%82%EF%FB%18%BC%AEJ8%AB%FA'%D2%BEU9%D7U%ECc0%E1%A2r%5DynwVi%CFW%7F%BB%17%7Dy%EACU%CD%0E%F0%FA%3BX%FEbV%FEM%9B%2B%AD%BE%AA%E5%95v%AB%AA%E3E5%DCu%15rV9%07%B5%7F%B5w%FCm%BA%BE%AA%FBY%3D%14%F0%EE%C7%60%0EU%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5JU%88%D3%F5%1F%AE%DF%3B%1B%F2%3E%DAUCNa%F92%D02%AC%7Dm%F9%3A%D4%F2%8B6%AE*%BF%5C%C2Ym~9g5%D0Y%95%17%7C%C8c%B0%7C%18%26%9CU%CD%13i%F7%AA%90%B3Z%7D%95%B4%C7%60%E6E%B5%BC%05%B4%FBY%95U%9E%DB%FD%1C%FC%E0%9F%83%7F%BE%17%7DkjMU%E3%03%AC%7CWj%DF%83%9An%BCG%AE%F1%95%96yQ%0Dq%5Dy%00%3Et%B5'%FC6%5DS%95pV%95%01%81%FF'%07%00%00%00%00%00%00%00%00%00%F8x%C7%F0%BE%9COp%5D%C9%7C%AD%E7%E6%EBV%FB%1E%E0(%07%E5%AC%C6%3A%ABi%9C%8F%C6%0E9%AB%C0'%D2%8E%9F%F99%D0E%B5%99%14%F5%0D%CD%7F%24%C6%DEH%B8%E9rV%DFs%DB%D0%F7%00k%FE%1D%84%84%83J%B8%E3%BA%FB%EF%20%84%1C%D7%AD%B0%8E%D7U%C8Y%05%1E%D4t%EF%AD%95Q%BF8w%BF%E9%0A%BF%EB%03%00%00%00%00%00%00%00%00%00%B8vJ%8E%BB%F5%B1u%8Cx%80%E1o%5E%CA9%AB%CB%CB%8E%03%DF%1D%B7T%25%9C%D5(%EFJM8%AB%CC'%D2%B2*%A4s%E7c6%FB%3E%FA%A2%1E%80~%0E%3E%DA%10x%5D%95Uig%15u%15%ED%7C%14%B6%87%A1%3B%FCo8%A8%D8o%D3%ADO%01%EDx%83%1A~%1B%9FpP%A3%DC%C6'%9C%95gK%00%00%00%00%00%00%00%00%00%20%D9%C9%11%D0%C0%40%AF%3F%EE%EE%92%94%D6%16X%B5%BCMH%15%2F%BF%D4%A7%C87%F1%8E%F2%81%AE%AAvzr%DA2%ABV%17%7C%E63%83%E7I%DC%C6%0Bs%1B%EF6%1E%00%00%00%00%00%00%00%00%00%80cr%9CW%FF%7F%C6%01%0E%F1%CE%A5%84%B3%CA%BC%E0%CB%AA%84%CE%F9%BF)%EC%13%08WU%AE%AB%B1%AE%2BO%EC%8E%CBYe%FE%8CN%ABr%5Dy%60~%CFA%0D%F4%AE%D4%BE%C75%CA%EDVB%EA(%B7%F1%09g%E5%D9%12%00%00%00%00%00%00%00%00%00H%F6%EB%13S%E7y%5E%5E%FB%98%F0%22%D1%B2'%A7%F0%92%B1%BC%24z3%AC%7Dm%60%D5%92%B4%7CEUO%5E%F0%AA*%3BU%B9%AE%3E%A0j%94%07%A0%C7%A0%AB%FD%B5%3F%A0%F7%03T%3Dy%D7%F7%D6%D4%C0%AAU%D2%E6%DFt%3F%A8%CC%AA%F2%86%B9%D7%F5%1F%18%E6%01%F8%CC%D5%9E%F0%F3z%88%AA%90%EF%20%00%00%00%00%00%00%00%00%00%C0%A6%D3%EA%CFi%AFb%2C%7BB%0A%2B%C3%1A%D7%06V%D5%07%A8r%5D%3D%D9%A6%CAu%F5%25%CF%A2%99%97zNX%60%95%AB%5DUZ%D5%FBR%03%AB%1C%D4k%9F%3F%BB%5C%FF%81a%AE%AB'%7F%F3%EA%FE%F3z%94%AA%D8%DF%5B%01%00%00%00%00%00%00%00%00%00%8E%FB%F3%F2%B1%1B%8DWU%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*UiU%C7%BBe%E7%F3%B9%CB%AAJ%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5*%AAj%FD%C6%D4%5Eo%90%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5%86%AF%1B%9F%98%DA%EBm%BBV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%AD%D6%E4%F58%01%00%00%00%00%00%00%00%00%00%00%00%00%00%40%85%7F%02%0C%008%C2%D0H%16j%8FX%00%00%00%00IEND%AEB%60%82") repeat-x !important;
+    border-top: 1px solid #BBBBBB !important;
+    border-right: 1px dashed #BBBBBB !important;
+    border-bottom: 1px solid #000000 !important;
+}
+
+.firebugRulerV {
+    top: 0 !important;
+    left: -15px !important;
+    width: 14px !important;
+    height: 100% !important;
+    background: url("data:image/png,%89PNG%0D%0A%1A%0A%00%00%00%0DIHDR%00%00%00%0E%00%00%13%88%08%02%00%00%00%0E%F5%CB%10%00%00%00%04gAMA%00%00%D6%D8%D4OX2%00%00%00%19tEXtSoftware%00Adobe%20ImageReadyq%C9e%3C%00%00%06~IDATx%DA%EC%DD%D1v%A20%14%40Qt%F1%FF%FF%E4%97%D9%07%3BT%19%92%DC%40(%90%EEy%9A5%CB%B6%E8%F6%9Ac%A4%CC0%84%FF%DC%9E%CF%E7%E3%F1%88%DE4%F8%5D%C7%9F%2F%BA%DD%5E%7FI%7D%F18%DDn%BA%C5%FB%DF%97%BFk%F2%10%FF%FD%B4%F2M%A7%FB%FD%FD%B3%22%07p%8F%3F%AE%E3%F4S%8A%8F%40%EEq%9D%BE8D%F0%0EY%A1Uq%B7%EA%1F%81%88V%E8X%3F%B4%CEy%B7h%D1%A2E%EBohU%FC%D9%AF2fO%8BBeD%BE%F7X%0C%97%A4%D6b7%2Ck%A5%12%E3%9B%60v%B7r%C7%1AI%8C%BD%2B%23r%00c0%B2v%9B%AD%CA%26%0C%1Ek%05A%FD%93%D0%2B%A1u%8B%16-%95q%5Ce%DCSO%8E%E4M%23%8B%F7%C2%FE%40%BB%BD%8C%FC%8A%B5V%EBu%40%F9%3B%A72%FA%AE%8C%D4%01%CC%B5%DA%13%9CB%AB%E2I%18%24%B0n%A9%0CZ*Ce%9C%A22%8E%D8NJ%1E%EB%FF%8F%AE%CAP%19*%C3%BAEKe%AC%D1%AAX%8C*%DEH%8F%C5W%A1e%AD%D4%B7%5C%5B%19%C5%DB%0D%EF%9F%19%1D%7B%5E%86%BD%0C%95%A12%AC%5B*%83%96%CAP%19%F62T%86%CAP%19*%83%96%CA%B8Xe%BC%FE)T%19%A1%17xg%7F%DA%CBP%19*%C3%BA%A52T%86%CAP%19%F62T%86%CA%B0n%A9%0CZ%1DV%C6%3D%F3%FCH%DE%B4%B8~%7F%5CZc%F1%D6%1F%AF%84%F9%0F6%E6%EBVt9%0E~%BEr%AF%23%B0%97%A12T%86%CAP%19%B4T%86%CA%B8Re%D8%CBP%19*%C3%BA%A52huX%19%AE%CA%E5%BC%0C%7B%19*CeX%B7h%A9%0C%95%E1%BC%0C%7B%19*CeX%B7T%06%AD%CB%5E%95%2B%BF.%8F%C5%97%D5%E4%7B%EE%82%D6%FB%CF-%9C%FD%B9%CF%3By%7B%19%F62T%86%CA%B0n%D1R%19*%A3%D3%CA%B0%97%A12T%86uKe%D0%EA%B02*%3F1%99%5DB%2B%A4%B5%F8%3A%7C%BA%2B%8Co%7D%5C%EDe%A8%0C%95a%DDR%19%B4T%C66%82fA%B2%ED%DA%9FC%FC%17GZ%06%C9%E1%B3%E5%2C%1A%9FoiB%EB%96%CA%A0%D5qe4%7B%7D%FD%85%F7%5B%ED_%E0s%07%F0k%951%ECr%0D%B5C%D7-g%D1%A8%0C%EB%96%CA%A0%A52T%C6)*%C3%5E%86%CAP%19%D6-%95A%EB*%95q%F8%BB%E3%F9%AB%F6%E21%ACZ%B7%22%B7%9B%3F%02%85%CB%A2%5B%B7%BA%5E%B7%9C%97%E1%BC%0C%EB%16-%95%A12z%AC%0C%BFc%A22T%86uKe%D0%EA%B02V%DD%AD%8A%2B%8CWhe%5E%AF%CF%F5%3B%26%CE%CBh%5C%19%CE%CB%B0%F3%A4%095%A1%CAP%19*Ce%A8%0C%3BO*Ce%A8%0C%95%A12%3A%AD%8C%0A%82%7B%F0v%1F%2FD%A9%5B%9F%EE%EA%26%AF%03%CA%DF9%7B%19*Ce%A8%0C%95%A12T%86%CA%B8Ze%D8%CBP%19*Ce%A8%0C%95%D1ae%EC%F7%89I%E1%B4%D7M%D7P%8BjU%5C%BB%3E%F2%20%D8%CBP%19*Ce%A8%0C%95%A12T%C6%D5*%C3%5E%86%CAP%19*Ce%B4O%07%7B%F0W%7Bw%1C%7C%1A%8C%B3%3B%D1%EE%AA%5C%D6-%EBV%83%80%5E%D0%CA%10%5CU%2BD%E07YU%86%CAP%19*%E3%9A%95%91%D9%A0%C8%AD%5B%EDv%9E%82%FFKOee%E4%8FUe%A8%0C%95%A12T%C6%1F%A9%8C%C8%3D%5B%A5%15%FD%14%22r%E7B%9F%17l%F8%BF%ED%EAf%2B%7F%CF%ECe%D8%CBP%19*Ce%A8%0C%95%E1%93~%7B%19%F62T%86%CAP%19*Ce%A8%0C%E7%13%DA%CBP%19*Ce%A8%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4h%A9%0C%B3E%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4h%A9%0C%B3E%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4%AE%A4%F5%25%C0%00%DE%BF%5C'%0F%DA%B8q%00%00%00%00IEND%AEB%60%82") repeat-y !important;
+    border-left: 1px solid #BBBBBB !important;
+    border-right: 1px solid #000000 !important;
+    border-bottom: 1px dashed #BBBBBB !important;
+}
+
+.overflowRulerX > .firebugRulerV {
+    left: 0 !important;
+}
+
+.overflowRulerY > .firebugRulerH {
+    top: 0 !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.fbProxyElement {
+    position: fixed !important;
+    pointer-events: auto !important;
+}
+</style></head>
+<body>
+<canvas height="697" width="1304" id="cnv"></canvas>
+<script>
+// Somme partielle cumulée des éléments d'un tableau de rang inférieur à un index donné
+Array.prototype.prtSum=function(ndx){var s=0;while (ndx--) s+=this[ndx];return s}
+
+/* ===== Installation du Canvas =====*/
+var cnv,ctx,ptr,scl,crdWdt=26;
+function resize(){
+	cnv=document.getElementById('cnv');
+	cnv.width=document.body.clientWidth;
+	cnv.height=document.body.clientHeight;
+	ctx=cnv.getContext('2d');
+	ctx.translate(cnv.width>>1,cnv.height>>1);
+	scl=cnv.height/(13*crdWdt);
+	ctx.scale(scl,scl);
+	ctx.font="20px Georgia,Sans-Serif";
+	ctx.textAlign='center';
+	ctx.textBaseline='middle';
+	ctx.lineCap='round';
+	ctx.lineWidth=0.5;
+	ctx.lineJoin='round';
+	ctx.fillStyle='#fff';
+// Définition d'un motif de remplissage pour le dos des cartes (Set up a pattern)
+	ptr = document.createElement('canvas');
+	ptr.width=7;ptr.height=7;
+	var ptx=ptr.getContext('2d');
+	ptx.fillStyle="#c06";
+	ptx.fillRect(0,0,8,8);
+	ptx.lineWidth=0.5;
+	ptx.lineCap='round';
+	ptx.strokeStyle="#ff0";
+	ptx.beginPath();
+	ptx.moveTo(4,1);ptx.lineTo(6,1);
+	ptx.moveTo(5,0);ptx.lineTo(5,2);
+	ptx.moveTo(0,5);ptx.lineTo(2,5);
+	ptx.moveTo(1,4);ptx.lineTo(1,6);
+	ptx.closePath();
+	ptx.stroke();
+   ptr=ctx.createPattern(ptr,"repeat");
+}
+resize();
+/* ===== Cards =====*/
+// Données liées aux cartes, largeur, hauteurs, rayon, couleurs, valeurs littérales  et classements
+var /*crdWdt=32 voir supra pour scale*/crdHgh=42,crdRds=3,crdBgc='#ffc',lnkClr='#f3f';
+var crdVlt="7,8,9,V,D,R,10,As".split(','); // Valeurs littérales des cartes
+var crdNmr=[0,0,0,2,3,4,10,11]; // Valeurs numériques
+var crdNmt=[0,0,14,20,3,4,10,11]; // Valeurs numériques à l'atout
+var trmRng=[0,1,6,7,2,3,4,5];// Classement des atouts (trumps) à appliquer aux valeurs usuelles (de 0 à 7) si atout
+var crdClr="Tèfle,Carreau,Cœur,Pique".split(',');
+// Places des cartes, textes ou liens x, y
+function Place(x,y){this.x=x;this.y=y}
+// Constructeur de Cartes numérotés de 0 à 31 avec un numero, une valeur, couleur et une place
+function Card(nmb,plc){
+	if (nmb instanceof Card) {
+		this.nmb=nmb.nmb;
+		this.vle=nmb.vle;
+		this.clr=nmb.clr;
+		if (plc) this.plc=plc;else this.plc=nmb.plc;
+		return}
+	this.nmb=nmb;
+	this.vle=nmb%8;
+	this.clr=(nmb-this.vle)/8;
+	this.plc=plc?plc:new Place(0,0);
+}
+// Dessiner une carte face visible ou non avec une orientation
+Card.prototype.draw=function(vsb,ang){
+	ctx.save();
+	ang=ang?ang:0;
+   ctx.translate(this.plc.x,this.plc.y);
+	ctx.rotate(ang);
+	ctx.strokeStyle="#000";
+	if (vsb) ctx.fillStyle=crdBgc;else ctx.fillStyle=ptr;
+ 	var xb=crdWdt>>1,xa=-xb,yb=crdHgh>>1,ya=-yb,rd=crdRds;
+	ctx.beginPath();
+	ctx.moveTo(xa+rd,ya);
+	ctx.lineTo(xb-rd,ya);
+	ctx.arc(xb-rd,ya+rd,rd,-Math.PI/2,0);
+	ctx.lineTo(xb, yb-rd);
+	ctx.arc(xb-rd,yb-rd,rd,0,Math.PI/2);
+	ctx.lineTo(xa+rd,yb);
+	ctx.arc(xa+rd,yb-rd,rd,Math.PI/2,Math.PI);
+	ctx.lineTo(xa,ya+rd);
+	ctx.arc(xa+rd,ya+rd,rd,Math.PI,-Math.PI/2);
+	ctx.stroke();
+	ctx.fill();
+	if (vsb) {
+		ctx.fillStyle=['#444','#a00','#d00','#000'][this.clr];
+		if (this.vle<8) {
+			ctx.fillText(crdVlt[this.vle],0,-(crdHgh>>2));
+			ctx.font=(this.clr%2?27:24)+"px Georgia,Sans-Serif";
+   		ctx.fillText(String.fromCharCode([9827,9830,9829,9824][this.clr]),0,crdHgh>>2)}
+		else {// Cartes sans valeurs ci-dessous pour affichage couleur de prise
+         ctx.font=(this.clr%2?36:33)+"px Georgia,Sans-Serif";
+         ctx.fillText(String.fromCharCode([9827,9830,9829,9824][this.clr]),0,0);
+		}
+	}
+	ctx.restore();
+}
+// Savoir si une carte est meilleure que l'autre en présence ou non d'atout game.trm (trump)
+// une défausse, théoriquement non comparable, est considérée comme moins bonne
+Card.prototype.bstCrd=function(crd){
+	return (crd.clr==game.trm && (this.clr!=game.trm || trmRng[this.vle]<trmRng[crd.vle]))
+		|| (crd.clr!=game.trm && this.clr!=game.trm && crd.clr==this.clr && this.vle<crd.vle);
+}
+// Des cartes sans valeur pour couleur de prise au second tour
+var i=4,clrTrm=[];while(i--) {clrTrm[i]=new Card(8*i);clrTrm[i].vle=8;}
+// if (window.console) console.log(' '+JSON.stringify(clrTrm));
+
+/*==== Players ====*/
+// Quatre joueurs de rang 0 en Sud à 3 en Ouest (la belotte tourne à droite) avec leurs positions et jeu
+function Player(pst){var a,b;
+	this.pst=pst;		// Position
+	this.vsb=(pst==0);// Visibilité en Sud jeu de l'utilisateur seul visible
+	this.rsp=null;    // Réponse premier tour (string) ou second tour (carte)
+	this.rsq=null;    // Complément carte couleur second tour
+	this.blt=0;       // Belotte 1 si possédée, 2 si belote annoncée, 3 ensuite
+	this.clrNmb=[];	// Nombre de cartes par couleurs
+	this.plyRng=-1;	// Rng du joueur
+	this.okBid=false;  // Boolean analyse des atouts possibles
+	// Places du joueur (centre du jeux par rapport au centre du canvas)
+	this.plc=[new Place(0,3*crdHgh),new Place(5*crdWdt,0),new Place(0,-3*crdHgh),new Place(-5*crdWdt,0)][pst];
+	// Places des réponses du joueur (toujours par rapport au centre du canvas)
+	this.plr=[new Place(0,a=Math.round(1.9*crdHgh)),new Place(b=Math.round(3*crdWdt),0),new Place(0,-a),new Place(-b,0)][pst];
+   this.crd=[];		// Les cartes du joueur
+//   if (window.console) console.log('Place '+this.pst+' '+this.plc.x+' '+this.plc.y);
+}
+Player.prototype.draw=function(){var i,r;
+	// Orientation pour visibilité des tests
+	i=this.crd.length;while(i--) this.crd[i].draw(this.vsb,-(this.pst%2)*Math.PI/2);
+//   if (window.console) console.log('Place '+this.pst+' '+this.plc.x+' '+this.plc);
+}
+Player.prototype.display=function(){var i,x,y,d=(this.crd.length-1)*crdWdt/2;
+	this.crd.sort(function(a,b){// Classement avec atouts (game.trm) en tête
+		if (game.trm=='undefined' || (a.clr!=game.trm && b.clr!=game.trm)) {if (a.clr==b.clr) return b.vle-a.vle; else return a.clr-b.clr}
+		else {if (a.clr==b.clr) return trmRng[b.vle]-trmRng[a.vle]; else return (b.clr==game.trm?1:-1)}});
+	if (this.pst%2) {x=this.plc.x;y=+d}
+	else {x=-d;y=this.plc.y;}
+ 	j=0;while (j<this.crd.length) {
+		this.crd[j].plc=new Place(x,y);j++;
+		if (this.pst%2) y-=crdWdt;else x+=crdWdt}
+//   if (window.console) console.log(' joueur: '+JSON.stringify(this));
+}
+Player.prototype.bid=function(){var i,crdWth,okTrm,mstNmb,okBid=this.okBid;
+	var crdClrNmb=[0,0,0,0],clrNmb,mstTrmNmb=[0,0,0,0],mstTrmVle=[0,0,0,0],mstCrdNmb=[0,0,0,0],bltClr=[0,0,0,0];
+
+	players[(this.pst+3)%4].rsp=null;  // Effacer l'annonce du joueur précédent
+
+	/* Éléments d'évaluation */
+	crdWth=this.crd.slice(0);
+	crdWth.push(game.rtr);
+	crdWth.sort(function(a,b){if (a.clr==b.clr) return b.vle-a.vle;else return a.clr-b.clr});
+//   if (window.console) console.log(JSON.stringify(crdWth));
+
+	// Nombre de cartes par couleurs avec la retourne et belote éventuelle
+   i=crdWth.length;while (i--) {crdClrNmb[crdWth[i].clr]++;
+		if (crdWth[i].vle==4 || crdWth[i].vle==5) bltClr[crdWth[i].clr]++}
+
+//	if (window.console) console.log(JSON.stringify(crdWth));
+ 	clr=4;while (clr--) bltClr[clr]=bltClr[clr]<2?0:1;
+	// Nombre de couleurs
+	clrNmb=crdClrNmb.filter(function(elm){return !!elm}).length;
+   // Nombre de grosses cartes (As et dix seconds) par couleurs sans la retourne
+   i=crdWth.length;while (i--) {
+			if ((crdWth[i].vle==7 || (crdWth[i].vle==6 && 1<crdClrNmb[crdWth[i].clr]))) mstCrdNmb[crdWth[i].clr]++;}
+	// Nombre et valeurs (8,4,2,1) des gros atouts (V,9,As,10) pour chaque couleur éventuelle d'atout
+   i=crdWth.length;while (i--) if (3<trmRng[crdWth[i].vle]) {mstTrmNmb[crdWth[i].clr]++;mstTrmVle[crdWth[i].clr]+=1<<(trmRng[crdWth[i].vle]-4);}
+
+
+   if (window.console) console.log('Ply'+this.pst+' bid:'+crdClrNmb+' mstTrmNmb:'+mstTrmNmb+' mstTrmVle:'+mstTrmVle+' nbrClr:'+clrNmb+' mstCrdNmb:'+mstCrdNmb+' bltClr:'+bltClr);
+
+	if (!okBid) for (clr=0;clr<4;clr++) {
+      mstNmb=mstCrdNmb.prtSum(4)-mstCrdNmb[clr];// Nombre de cartes maîtresses (celles de l'atout en moins)
+		// le valet et le 9, la main et au moins deux cartes maîtresses
+		okTrm=12<=mstTrmVle[clr] && game.trn%2==this.pst%2 && 2<=mstNmb;
+//      if (window.console) console.log('Clr:'+clr+' '+okTrm);
+		// Trois atouts dont le valet ou le 9 et une carte maîtresse ou la belotte ou deux couleurs
+		okTrm=okTrm || (3<=crdClrNmb[clr] && 4<=mstTrmVle[clr]  &&  (1<=mstNmb || bltClr[clr] || clrNmb==2));
+//      if (window.console) console.log(clr+' trmNmb:'+crdClrNmb[clr]+' trmVle:'+mstTrmVle[clr]+' mstNmb:'+mstNmb+' '+bltClr[clr]+' clrNmb:'+clrNmb+' '+okTrm);
+		// Quatre atouts dont un parmi V,9,As et une carte maîtresse ou la belote ou deux couleurs
+      okTrm=okTrm || (4<=crdClrNmb[clr] && 1<=mstTrmVle[clr] && (1<=mstNmb || bltClr[clr] || clrNmb<3));
+//      if (window.console) console.log(clr+' trmNmb:'+crdClrNmb[clr]+' trmVle:'+mstTrmVle[clr]+' mstNmb:'+mstNmb+' '+bltClr[clr]+' clrNmb:'+clrNmb+' '+okTrm);
+		// Cinq atouts et plus...
+		okTrm=okTrm || 4<crdClrNmb[clr];
+      if (window.console && okTrm) console.log('Clr:'+clr+' '+okTrm)
+		okBid = okTrm && ((game.btr==1 && clr==game.rtr.clr) || (game.btr==2));
+		if (okBid) break;
+	}
+	if (this.okBid=okBid) {
+      if (game.btr==1){
+			this.rsp=game.rtr;this.rsp.plc=this.plr;game.trm=clr;game.rtr=null;game.dcl=game.trn%4;canvasDraw();
+        	setTimeout(function(){game.trn=game.dlr+1;game.secondDeal()},2*dly)}
+      if (game.btr==2){
+   		this.rsp=game.rtr;this.rsp.plc=new Place(this.plr.x+(crdWdt>>1),this.plr.y);
+			this.rsq=clrTrm[clr];this.rsq.plc=new Place(this.plr.x-(crdWdt>>1),this.plr.y);
+				game.trm=clr;game.rtr=null;game.dcl=game.trn%4;canvasDraw();
+				setTimeout(function(){game.trn=game.dlr+1;game.secondDeal()},2*dly)}
+		return true
+	}
+
+	return false; // le joueur pase
+}
+Player.prototype.play=function(){var i,j,k,r,crd,ndx,scr;
+   if (players[0].rsp=='x') players[0].rsp=null;// Effacer un éventuel 'x'
+
+	/* Eléments pour application des règles lorsque Sud doit jouer (indispensables dans les events infra)*/
+	// Rang du joueur, nos du pli et carte maîtresse
+	this.plyRng=game.pldPst.length%4;
+   game.trcNmb=(game.pldPst.length-this.plyRng)/4;
+
+   // Tableau des nombres de cartes du joueur par couleur dans l'ordre de tri (atouts en tête)
+	this.clrNmb=[0,0,0,0];
+   i=this.crd.length;while(i--) this.clrNmb[game.clrRng[this.crd[i].clr]]++;
+
+   // Belote ?
+	if (!game.trcNmb) {i=this.clrNmb[0];j=0;
+		while (i--) if (this.crd[i].vle==4 || this.crd[i].vle==5) j++;this.blt=j<2?0:1;}
+
+   if (this.plyRng==0) game.wnnCrd=null;
+
+   /* Exceptions pour mise à jour des scores et présentation du pli ou fin de jeu */
+	if (game.trcShw) {i=game.pldPst.length;
+		// Décompte des points
+		while (game.pldPst.length-4<i--) game.scrPrt[game.wnnPst%2]+=+(game.pldCrd[i].clr==game.trm?crdNmt[game.pldCrd[i].vle]:crdNmr[game.pldCrd[i].vle]);
+		if (game.pldPst.length==32){
+			// 100 de capot ou 10 de der
+   		game.scrPrt[game.wnnPst%2]+=(game.scrPrt[0] && game.scrPrt[1])?10:100;
+         // Belote imprenable !
+			game.blt=[0,0];
+         i=4;while(i--) if (1<players[i].blt) {game.blt[i%2]+=+20;break}
+			game.scrLtg=0;// Litige
+			if (game.scrPrt[0]+game.blt[0]==game.scrPrt[1]+game.blt[1]) {
+				game.scrLtg=game.scrPrt[0];
+				game.scrPrt[1-game.dcl%2]=game.scrPrt[1-game.dcl%2]+game.blt[1-game.dcl%2];
+				game.scrPrt[game.dcl%2]=game.blt[game.dcl%2];}
+			else if (game.scrPrt[0]+game.blt[0]<game.scrPrt[1]+game.blt[1] && game.dcl%2==0) {game.scrPrt[1]=game.scrPrt[0]+game.scrPrt[1]+game.blt[1];game.scrPrt[0]=+game.blt[0]}
+      	else if (game.scrPrt[1]+game.blt[1]<game.scrPrt[0]+game.blt[0] && game.dcl%2!=0) {game.scrPrt[0]=game.scrPrt[0]+game.scrPrt[1]+game.blt[0];game.scrPrt[1]=+game.blt[1];}
+			else {game.scrPrt[0]+=+game.blt[0];game.scrPrt[1]+=+game.blt[1];}}
+		canvasDraw();
+      if (window.console && Math.round(game.pldPst.length/4)==8) console.log(' Scores Totaux avant NS:'+game.scrTtx[0]+' EO:'+game.scrTtx[1]);
+		if (window.console && Math.round(game.pldPst.length/4)==8) console.log(' Scores partiels en plus NS:'+game.scrPrt[0]+' EO:'+game.scrPrt[1]);
+
+		var chn='pli n°'+game.trcNmb+' : ';
+		for (i=Math.max(0,game.pldPst.length-4);i<game.pldPst.length;i++) chn+=' joueur:'+game.pldPst[i]+' '+crdVlt[game.pldCrd[i].vle]+' de '+crdClr[game.pldCrd[i].clr]+', ';
+  		if (window.console) console.log(chn+' winner:'+game.wnnPst );
+		okClc=true;
+		return} // Fin d'exposition du pli
+	// Attente du coup de Sud ou fin de partie
+	else if (game.trn==0 || 31<game.pldPst.length){
+		if (31<game.pldPst.length) game.end();
+		else players[0].rsp='x';canvasDraw();okClc=true;return}
+
+	// Sinon, il faut choisir un index ndx correspondant à une carte du jeu this.crd
+
+	/* Éléments complémentaires d'évaluation */
+   var pldNmb=[0,0,0,0],dmoNmb=[];
+	// Tableau des nombres de cartes jouées par couleur dans le nouvel ordre des couleurs (atout en tête)
+ 	i=game.pldCrd.length;while(i--) pldNmb[game.clrRng[game.pldCrd[i].clr]]++;
+	// Nombre de cartes, parmi les restantes, dominant chaque cartes au début du pli (cartes maîtresses du jeu)
+	// (ex: Entame, puis-je jouer le dix ? Pli à Pique, j'ai le dix. Est-il susceptible de l’emporter ?)
+	this.crd.forEach(
+		function(c,i){var n=game.trcNmb*4,r;
+			if (c.clr==game.trm) {r=7-trmRng[c.vle];
+				while (n--) if (c.clr==game.pldCrd[n].clr && trmRng[c.vle]<trmRng[game.pldCrd[n].vle]) r--;dmoNmb[i]=r}
+			else  {r=7-c.vle;
+				while (n--) if (c.clr==game.pldCrd[n].clr && c.vle<game.pldCrd[n].vle) r--;dmoNmb[i]=r}
+		});
+
+
+	/* Jeu effectif */
+
+
+	ndx=-1;
+	var clr,ndi,dlt,max;
+	if (this.plyRng==0) {// Entame
+
+		// Jouer, en défense, un singleton (sauf un dix non dominant) pour essayer de sauver un gros atout non dominant
+      if (window.console) console.log(' search atouts:'+this.clrNmb[0]+' vle:'+trmRng[this.crd[0].vle]+' dom:'+dmoNmb[0]+' clrNmb:'+this.clrNmb+' ndx:'+this.clrNmb.indexOf(1,1))
+		if (game.trn%2!=game.dcl%2 && 0<this.clrNmb[0] && 3<(i=trmRng[this.crd[0].vle]) && dmoNmb[0] && -1<(i=this.clrNmb.indexOf(1,1))){
+//         if (window.console) console.log(' search sng i:'+i);
+			var clr=1,rng;// atouts exclus
+			while (-1<(clr=this.clrNmb.indexOf(1,clr))) {rng=this.clrNmb.prtSum(clr);// rang de carte unique
+//            if (window.console) console.log(' search sng clr:'+clr+' rng:'+rng);
+				if (this.crd[rng].vle!=6 || !dmoNmb[rng]) {ndx=rng;break} clr++}
+         if (-1<ndx && window.console) console.log(game.pldPst+'Singleton - '+("Sud,Est,Nord,Ouest".split(',')[game.trn])+' joue : '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+		}
+
+
+		// Relancer une couleur jouée par le partenaire sauf atout
+		clr=-1;
+      if (window.console) console.log('joueurs plis : '+game.pldPst+' partenaire :'+((game.trn+2)%4));
+		for (i=(game.trcNmb-1)*4;-2<i;i-=4) {
+         if (window.console) console.log('n°:'+(i+1)+' attaquant:'+game.pldPst[i]+' clr:'+game.pldCrd[i].clr);
+			if (game.pldPst[i]==(game.trn+2)%4 && game.pldCrd[i].clr!=game.trm) {clr=game.pldCrd[i].clr;break}}
+		if (-1<clr && this.clrNmb[game.clrRng[clr]]) {
+         bst=this.clrNmb.prtSum(game.clrRng[clr]);
+			lws=this.clrNmb.prtSum(game.clrRng[clr]+1)-1;
+			if (!dmoNmb[bst]) ndx=bst;else ndx=lws;
+         if (window.console) console.log('Relance - '+("Sud,Est,Nord,Ouest".split(',')[game.trn])+' joue : '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+			}
+
+
+		// Jouer Atout ?
+		// Combien de plis à l'atout trmtrcNmb
+		if (ndx<0) {
+			var trmTrcNmb=0;lng=game.pldPst.length;
+			for (i=0;i<lng;i+=4) if (game.pldCrd[i].clr==game.trm) trmTrcNmb++;
+			//  Camp du déclarant si des atouts et pas encore de pli
+			if (game.dcl%2==game.trn%2 && this.clrNmb[0] && !trmTrcNmb) {
+	         // Le plus faible si pas dominant (à ajuster)
+				if (dmoNmb[0]){ndx=this.clrNmb[0]-1;while (ndx-- && trmRng[this.crd[ndx]]<4);ndx++} else ndx=0;}
+	      //  Camp adverse si des atouts, déjà joués et dominant
+			if (game.dcl%2!=game.trn%2 && this.clrNmb[0] && trmTrcNmb && !dmoNmb[0]) ndx=0;
+         if (-1<ndx && window.console) console.log('Jouer Atout - '+("Sud,Est,Nord,Ouest".split(',')[game.trn])+' joue : '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+		}
+
+		// Dominante en dehors de l'atout
+		if (ndx<0) {i=dmoNmb.length;
+			while(this.clrNmb[0]<i--) if (!dmoNmb[i]) {ndx=i;i=-1};
+         if (-1<ndx && window.console) console.log('Dominante - '+("Sud,Est,Nord,Ouest".split(',')[game.trn])+' joue : '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+		}
+
+		// Jouer une carte unique (sauf un dix non dominant) pour couper avec un atout non maître
+		if (ndx<0 && 0<this.clrNmb[0] && (1<this.clrNmb[0] || !dmoNmb[0]) && -1<(clr=this.clrNmb.indexOf(1,1))){
+         var clr=1,rng;// atouts exclus
+			while (-1<(clr=this.clrNmb.indexOf(1,clr))) {rng=this.clrNmb.prtSum(clr);// rang de carte unique
+				if (this.crd[rng].vle!=6 || !dmoNmb[rng]) {ndx=rng;break} clr++}
+         if (-1<ndx && window.console) console.log('Singleton bis - '+("Sud,Est,Nord,Ouest".split(',')[game.trn])+' joue : '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+		}
+
+		// Affranchir la longue
+		if (ndx<0) {i=4;j=0;r=0;
+			while (i--) {clr=game.clrRng[i];
+				if (clr && (k=8-pldNmb[clr]) && j<this.clrNmb[clr]/k) {j=this.clrNmb/k;r=clr}}
+			if (r) ndx=this.clrNmb.prtSum(r+1)-1;
+      	if (-1<ndx && window.console) console.log('Affranchir '+("Sud,Est,Nord,Ouest".split(',')[game.trn])+' joue : '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+		}
+
+
+		if (ndx<0){// Carte aléatoire
+       	ndx=Math.floor(Math.random()*this.crd.length);
+            if (window.console) console.log('Aléatoire - '+("Sud,Est,Nord,Ouest".split(',')[game.trn])+' joue : '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+			}
+
+		crd=this.crd[ndx];
+		game.wnnCrd=crd;
+		game.wnnPst=game.trn%4; // Sa position
+//      if (window.console) console.log("Sud,Est,Nord,Ouest".split(',')[game.wnnPst]+' Entame '+crdVlt[crd.vle]+' de '+crdClr[crd.clr]+' pst:'+game.wnnPst);
+	}
+	else {// Pli existant
+		var trcClr,trcCrd,bst,lws;
+		trcClr=game.pldCrd[game.trcNmb*4].clr;
+		// Les cartes du pli
+		trcCrd=game.pldCrd.slice(game.trcNmb*4);
+
+ 		// Fournir à la couleur
+      if (this.clrNmb[game.clrRng[trcClr]]){
+			bst=this.clrNmb.prtSum(game.clrRng[trcClr]);
+			lws=this.clrNmb.prtSum(game.clrRng[trcClr]+1)-1;
+         if (game.clrRng[trcClr]==0){// Atout monter avec la carte la plus faible, sinon la plus faible
+				i=lws;while (bst<=i && !game.wnnCrd.bstCrd(this.crd[i])) i--;
+				if (bst<=i && game.wnnCrd.bstCrd(this.crd[i])) ndx=i;else ndx=lws;}
+			// Couleur
+			if (ndx<0 && game.wnnPst%2!=game.trn%2) {// Adversaire maître
+        		if (game.wnnCrd.clr==game.trm) ndx=lws;// Par la coupe plus petite
+            // Sinon, la plus forte si dominante ou si dernière plus forte carte du pli
+				else if (!dmoNmb[bst] || (game.wnnCrd.bstCrd(this.crd[bst]) && this.plyRng==3)) ndx=bst;
+				else ndx=lws}
+         // Partenaire maître, la meilleure (à revoir si partenaire prend le 7 du 8 ne pas mettre le 10 !)
+			if (ndx<0) ndx=bst;
+         if (window.console) console.log("Sud,Est,Nord,Ouest".split(',')[game.trn]+' fournit '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+  		}
+
+		// Couper si possible sauf partenaire maitre
+		if (ndx<0 && game.wnnPst%2!=game.trn%2 && 0<this.clrNmb[0]) {
+			if (!game.wnnCrd.bstCrd(this.crd[0])) ndx=this.clrNmb[0]-1;// le plus petit si montée impossible
+			else {// le plus petit des plus gros remportant le pli sauf à laiser un gros non dominant
+            ndx=0;while (ndx+1<this.clrNmb[0] && game.wnnCrd.bstCrd(this.crd[ndx+1])) ndx++;
+				if (ndx==1 && dmoNmb[0]) ndx=0;
+         if (window.console) console.log("Sud,Est,Nord,Ouest".split(',')[game.trn]+' coupe '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+		}}
+
+		if (ndx<0 && game.wnnPst%2==game.trn%2){// partenaire maître
+         i=dmoNmb.length-1; // appeler dans une couleur
+			while(i--) if (!dmoNmb[i] && this.crd[i].clr!=game.trm && this.crd[i+1].clr==this.crd[i].clr) ndx=i+1;
+   	   if (-1<ndx && window.console) console.log("Sud,Est,Nord,Ouest".split(',')[game.trn]+' appelle '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+		}
+
+      if (ndx<0 && game.wnnPst%2!=game.trn%2){// pli adverse
+         i=dmoNmb.length; // la plus dominée
+			max=Math.max.apply(null,dmoNmb);ndx=dmoNmb.indexOf(max);
+	      if (window.console) console.log("Sud,Est,Nord,Ouest".split(',')[game.trn]+' largue '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+		}
+
+      // Défausser aléatoirement ou couper si seuls des atouts restants.
+		if (ndx<0){
+      	if ((dlt=this.crd.length-this.clrNmb[0])!=0) ndx=this.clrNmb[0]+Math.floor(Math.random()*dlt);
+			else ndx=Math.floor(Math.random()*this.crd.length)
+         if (window.console) console.log("Sud,Est,Nord,Ouest".split(',')[game.trn]+' défausse au hasard '+crdVlt[this.crd[ndx].vle]+' de '+crdClr[this.crd[ndx].clr]);
+		}
+
+		// Bilan
+		var crd=this.crd[ndx];
+		if (game.wnnCrd.bstCrd(crd)) {game.wnnCrd=crd;game.wnnPst=game.trn;}
+//      if (window.console) console.log("Sud,Est,Nord,Ouest".split(',')[game.trn%4]+' joue ndx:'+ndx+' '+crdVlt[crd.vle]+' de '+crdClr[crd.clr]+' pst:'+game.wnnPst);
+	}
+	crd=this.crd.splice(ndx,1)[0];
+  	crd.plc=game.plj[this.pst];
+	game.pldCrd[game.pldCrd.length]=crd;
+   game.trcShw=(this.plyRng==3 || 31<game.pldCrd.length);
+	game.pldPst[game.pldPst.length]=this.pst;
+	if (this.blt && crd.clr==game.trm && (crd.vle==4 || crd.vle==5)) {this.rsp=this.blt==1?'Belote !':'Rebelote !';this.blt++}
+	this.display();
+	okTch=false;
+	canvasDraw();
+	// Game trn;
+   if (!game.trcShw) {game.trn++;game.trn%=4} else game.trn=game.wnnPst;
+  	canvasDraw();
+	setTimeout(function(){players[game.trn].play();},dly);
+}
+/*===== Game =====*/
+var dly=500;// Delai de réaction entre les actions
+function Game(){var a,b;
+//	this.crd=[];  en fin de liste pour console log
+	this.dlr=-1; 		// Le donneur
+	this.crdNmb;   	// Prochaine carte à distribuer ou à jouer
+	this.trn;    		// Le tour de distribution, d'enchères, puis de jeu de la carte
+	this.tln=null; 	// le talon (une carte de dos dont l'orientation indique le tour de distribution ou d'enchère)
+	this.rtr=null; 	// La carte retournée pour les enchères
+	this.btr=null; 	// Le tour d'enchère 1 ou 2 (bid turn)
+	this.dcl=null;		// Le déclarant qui choisit l'atout (the declarer)
+	this.trm='undefined';    // La couleur d'atout (undefined indispensable pour différencier avec les tréfles valeur 0)
+   this.clrRng=[];   //	Les rangs des couleurs après le choix de  l'atout
+   this.plyStg=false;// La phase de jeu de la carte
+	this.wnnCrd;      // La carte gagnante du pli
+	this.wnnPst;   	// Sa position
+	this.trcShw=false;// Booléan pour faire voir le pli avant tour suivant (impose un clic sur la table pour la suite)
+	this.scrPrt=null; // Les scores partiels ou totaux
+   this.scrTtx=null;
+	this.scrLtg=null; // Points en litige
+	this.newGme=false;// Nouvelle partie
+	// Deux tableaux indéxés sur les rangs des cartes jouées permettant de retrouver tous les plis et rang du joueur qui a la main
+	this.trcNmb;       // le numéro du pli
+   this.pldCrd=[];	// Les cartes jouées (played card) dans l'ordre
+	this.pldPst=[];   // Les positions des joueurs ayant joué ces cartes
+   // Places des talons pour l'affichage
+	this.plt=[new Place(a=2.5*crdWdt,a),new Place(a,-a),new Place(-a,-a),new Place(-a,a)];
+	// Places des cartes jouées
+	this.plj=[new Place(0,a=Math.round(0.65*crdHgh)),new Place(b=Math.round(0.7*crdWdt),0),new Place(0,-a),new Place(-b,0)];
+   this.crd=[];		// les cartes
+	a=0;while(a<32) this.crd[a]=new Card(a++);
+}
+// Mélanger les cartes (seulement à l'ouverture en suite seule une coupe)
+Game.prototype.shuffle=function(){var d=[],n;
+	while (n=game.crd.length) d[d.length]=game.crd.splice(Math.floor(Math.random()*n),1)[0];
+	game.crd=d.slice(0);
+}
+Game.prototype.firstDeal=function(){
+	// Nombre de carte à distribuer dépendant du tour
+	var i,l=(4<game.trn-game.dlr)?2:3,ply=players[game.trn%4];
+   for (i=0;i<l;i++) ply.crd[ply.crd.length]=game.crd[game.crdNmb++];
+	ply.display();
+   canvasDraw();
+	if (game.trn-game.dlr!=8) {setTimeout(function(){game.trn++;game.firstDeal()},dly)}
+	else setTimeout(function(){game.rtr=new Card(game.crd[game.crdNmb++],game.plt[game.dlr]);canvasDraw();
+			game.trn++;setTimeout(function(){canvasDraw();game.bidding()},dly)},dly);
+}
+Game.prototype.bidding=function(){
+	// Le tour des enchères
+	game.btr=(game.trn-game.dlr)<=12?1:2;
+   // Attendre le choix de l'utilisateur
+	if (game.trn%4==0) {players[3].rsp=null;players[0].rsp=game.btr==1?'?':'??';canvasDraw();okClc=true;return}
+	// Sans réponse on continue
+	if (players[game.trn%4].bid()) return;
+	players[game.trn%4].rsp='Passe';canvasDraw();game.trn++;
+	if (16<game.trn-game.dlr) {setTimeout(game.end,dly)}
+   else setTimeout(game.bidding,dly);
+//   if (window.console) console.log(' attente turn : '+game.trn+' '+JSON.stringify(players[game.trn%4]));
+}
+Game.prototype.secondDeal=function(){var i,l=3,ply=players[game.trn%4];
+	if (game.trn%4==game.dcl) {l=2;ply.crd[ply.crd.length]=ply.rsp;}
+	for (i=0;i<l;i++) ply.crd[ply.crd.length]=game.crd[game.crdNmb++];
+	ply.display();
+   ply.rsp=null;
+   canvasDraw();
+	game.trn++;
+
+	if (game.crdNmb<32) {setTimeout(game.secondDeal,dly);return}
+	game.tln=null;game.btr=null;game.scrPrt=[0,0];
+	game.trn%=4;
+	game.clrRng=[0,1,2,3];game.clrRng[game.trm]=0;
+	i=game.trm;while(i--) game.clrRng[i]++;
+	if (window.console) console.log('Atout:'+crdClr[game.trm]);
+	game.crdNmb=0;game.plyStg=true;
+	players[game.trn].play();
+}
+Game.prototype.end=function(){var ply=players[(game.trn+3)%4];
+	game.tln=null;
+	game.rtr=null;
+	game.dcl=null;
+	game.btr=null;
+   game.plyStg=false;
+	game.scrTtx[0]+=game.scrPrt[0];
+   game.scrTtx[1]+=game.scrPrt[1];
+   game.scrPrt=[0,0];
+	game.trn=0;
+	links.length=0;
+//   game.pldCrd=[];	// Les cartes jouées (played card) dans l'ordre
+	game.pldPst=[];
+   i=4;while(i--) players[i]=new Player(i);
+	okClc=true;
+	if (500<=Math.max.apply(null,game.scrTtx)) {game.newGme=true;
+		if (game.scrTtx[0]==game.scrTtx[1]) links[links.length]=new Link('Partie nulle !',game.deal);
+      else links[links.length]=new Link(['NS','EO'][game.scrTtx[0]<game.scrTtx[1]?1:0]+' gagnent !',game.deal)}
+   else links[links.length]=new Link('Nouvelle donne ?',game.deal);
+	canvasDraw();
+}
+// Distribution des cartes et placement de celles-ci dans les jeux (selon leur rang)
+Game.prototype.deal=function(){var i;
+   links.length=0;
+	game.dlr=(game.dlr+1)%4;
+   game.tln=new Card(32,game.plt[game.dlr]);
+	game.trn=game.dlr+1;
+	game.crdNmb=0;
+   game.trm='undefined';
+	game.plyStg=false;
+	if (game.newGme) {game.scrTtx=[0,0];game.newGme=false};
+	// Reprise des cartes jouées
+   if (game.pldCrd.length) game.crd=game.pldCrd.slice(0);
+	// Et coupe (on ne mélange pas les cartes à la Belote !)
+	i=Math.floor(6+Math.random()*20);game.crd=game.crd.slice(i).concat(game.crd.slice(0,i));
+//   if (window.console) console.log(game.crd.length+' '+JSON.stringify(game.crd));
+   game.pldCrd=[];
+	game.firstDeal();
+}
+/* ===== Canvas =====*/
+// Des liens cliquables actuellement centraux (à voir...)
+// La demi-longueur du texte et celle de la taille de la police (soit 10px)
+// sont utilisées pour détecter la zone cliquable
+var links=[];
+function Link(txt,act){
+	this.txt=txt;
+	this.plc=new Place(0,0);
+	this.lng=ctx.measureText(txt).width>>1;
+   this.act=act;
+//	if (window.console) console.log(JSON.stringify(this));
+}
+Link.prototype.affiche=function(){
+	ctx.save();
+	ctx.fillStyle=this.lnkClr;
+	ctx.fillText(this.txt,this.plc.x,this.plc.y);
+	ctx.restore();
+}
+Link.prototype.test=function(x,y){var r=false;
+	if (Math.abs(x-this.plc.x)<this.lng && Math.abs(y-this.plc.y<10)) r=true;
+	return r;
+}
+function clearBoard(){
+	ctx.save();
+	ctx.fillStyle='#063';
+	ctx.fillRect(-cnv.width>>1,-cnv.height>>1,cnv.width,cnv.height);
+	ctx.restore();
+}
+// Dessin du canvas;
+function canvasDraw(){var i,j;
+	clearBoard();
+   ctx.save();
+	// Le rectangle
+	if (game.trcShw){
+		ctx.fillStyle="#093";
+		ctx.fillRect(-2.5*crdWdt,-2.5*crdWdt,5*crdWdt,5*crdWdt)}
+	ctx.stokeStyle="#000";
+	ctx.strokeRect(-2.5*crdWdt,-2.5*crdWdt,5*crdWdt,5*crdWdt);
+// Encombrement total
+//   ctx.strokeRect(-7*crdWdt,-6*crdWdt,14*crdWdt,12*crdWdt);
+
+	// Les jeux et réponses des joueurs
+ 	i=4;while(i--) {
+	 	players[i].draw();
+		if (players[i].rsp){
+         if (typeof(players[i].rsp)=='string'){
+				ctx.fillStyle='#fff';
+				ctx.fillText(players[i].rsp,players[i].plr.x,players[i].plr.y);
+			}
+			else {
+            players[i].rsp.draw(true);
+				if (players[i].rsq) players[i].rsq.draw(true);
+			}
+		}
+	}
+	// les scores
+	ctx.fillStyle="#fff";
+	ctx.font="16px Georgia,Sans-Serif";
+   if (game.plyStg) {
+      if (game.scrPrt && game.scrPrt[0]) ctx.fillText('NS : '+game.scrPrt[0],5*crdWdt,3*crdHgh)
+		if (game.scrPrt && game.scrPrt[1]) ctx.fillText('EO : '+game.scrPrt[1],-5*crdWdt,3*crdHgh);
+      if (game.scrPrt && game.scrLtg) ctx.fillText(' Litige : '+game.scrLtg+' pts',0,-3*crdHgh)}
+   if (game.scrTtx && game.scrTtx[0]) ctx.fillText('NS : '+game.scrTtx[0]+'/500',5*crdWdt,-3*crdHgh);
+   if (game.scrTtx && game.scrTtx[1]) ctx.fillText('EO : '+game.scrTtx[1]+'/500',-5*crdWdt,-3*crdHgh);
+   ctx.restore();
+	// Le talon indicateur de l'action par son orientation
+	if (game.tln){// Angle avec Oy => inversion des arguments et signe -
+		game.tln.draw(false,-Math.atan2(players[game.trn%4].plr.x-game.plt[game.dlr].x,players[game.trn%4].plr.y-game.plt[game.dlr].y))};
+	// La carte retournée
+	if (game.rtr) game.rtr.draw(true);
+	// Le pli en cours
+   j=game.pldPst.length;
+	i=j-j%4;if (j && game.trcShw) i=j-4;
+   for (i;i<j;i++) {
+		game.pldCrd[i].draw(true,0);
+		}
+	// Les liens
+	i=links.length;while (i--) links[i].affiche();
+	// Si animation (déplacement des cartes)
+	if (okTch) requestAFrame(canvasDraw);
+}
+// Define requestAFrame
+window.requestAFrame=(function() {
+	return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame ||
+          	window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+					function (callback) {return window.setTimeout(callback,1000/60)}
+})();
+/*===== Events =====*/
+var okTch=false,okClc=false,tchStrX,tchStrY,mseDltX,mseDltY,crdMve=null,crdPlo,crdNos;
+cnv.ontouchstart=cnv.ongesturestart=window.onmousedown=function(e){var i,crd,pls=players[0];
+	e.preventDefault();
+	if (e.target.nodeName!='CANVAS') return;
+   if (!okClc) return;// Seulement si sud à la main ou lien affiché
+	if (document.setCapture) document.setCapture();
+	okClc=false;
+	okTch=true;
+	tchStrX=((e.clientX!==undefined?e.clientX:e.touches[0].clientX)-(cnv.width>>1))/scl;
+	tchStrY=((e.clientY!==undefined?e.clientY:e.touches[0].clientY)-(cnv.height>>1))/scl;
+	crdMve=null;crdNos=-1;
+   mseDltX=mseDltY=null;
+	// Appréhension par Sud de la carte retournée
+	crd=game.rtr;
+   if (crd && Math.abs(crd.plc.x-tchStrX)<(crdWdt>>1) && Math.abs(crd.plc.y-tchStrY)<(crdHgh>>1)) crdMve=crd;
+	// ou d'une carte de son jeu
+  	for (l=pls.crd.length,i=0;i<l;i++) {crd=pls.crd[i];
+   	if (Math.abs(crd.plc.x-tchStrX)<(crdWdt>>1) && Math.abs(crd.plc.y-tchStrY)<(crdHgh>>1)) {crdMve=crd;crdNos=i;break}}
+	if (crdMve){
+     	mseDltX=crdMve.plc.x-tchStrX;
+		mseDltY=crdMve.plc.y-tchStrY;
+		crdPlo=crdMve.plc;
+		canvasDraw()}
+}
+cnv.ontouchmove=cnv.ongesturechange=window.onmousemove=function(e){var tchMveX,tchMveY;
+	if (okTch) e.preventDefault();
+	if (!okTch) return;
+	tchMveX=((e.clientX!==undefined?e.clientX:e.touches[0].clientX)-(cnv.width>>1))/scl;
+	tchMveY=((e.clientY!==undefined?e.clientY:e.touches[0].clientY)-(cnv.height>>1))/scl;
+   if (crdMve) crdMve.plc=new Place(tchMveX+mseDltX,tchMveY+mseDltY);// la carte suit la souris
+}
+cnv.ontouchend=cnv.ongestureend=cnv.touchleave=window.onmouseup=function(e){var tchEndX,tchEndY,dx,dy,pls=players[0];
+	e.preventDefault();
+	if (!okTch) return;
+	if (document.releaseCapture) document.releaseCapture();
+   tchEndX=((e.clientX!==undefined?e.clientX:e.touches[0].clientX)-(cnv.width>>1))/scl;
+   tchEndY=((e.clientY!==undefined?e.clientY:e.touches[0].clientY)-(cnv.height>>1))/scl;
+	dx=Math.abs(tchEndX-tchStrX);
+	dy=Math.abs(tchEndY-tchStrY);
+   okTch=false;
+	if (game.trn%4==0 && crdMve && !game.trcShw){ // Une carte appréhendée
+//   if (window.console) console.log('carte bid trn:'+game.btr+' crdNos:'+crdNos+' crd'+crdMve.nmb);
+		if (crdNos<0){ // déplacemnt d'une carte du talon
+			if (game.btr==1) {pls.rsp=crdMve;pls.rsp.plc=pls.plr;game.rtr=null;game.dcl=game.trn%4;canvasDraw();
+            game.trm=crdMve.clr;
+				setTimeout(function(){game.trn=game.dlr+1;game.secondDeal()},2*dly);return}
+			else game.rtr.plc=crdPlo;okClc=true}
+		else {// ou du jeu de Sud pour les deux tours d'annonce
+			if (game.btr==1 && crdMve.clr==game.rtr.clr) {pls.rsp=game.rtr;pls.rsp.plc=pls.plr;game.rtr=null;game.dcl=game.trn%4;
+				pls.crd[crdNos].plc=crdPlo;canvasDraw();game.trm=crdMve.clr;
+				setTimeout(function(){game.trn=game.dlr+1;game.secondDeal()},2*dly);return}
+			else if (game.btr==2 && crdMve.clr!=game.rtr.clr) {pls.crd[crdNos].plc=crdPlo;
+				pls.rsp=game.rtr;pls.rsp.plc=new Place(pls.plr.x+(crdWdt>>1),pls.plr.y);
+				pls.rsq=clrTrm[crdMve.clr];pls.rsq.plc=new Place(pls.plr.x-(crdWdt>>1),pls.plr.y);
+				game.trm=crdMve.clr;
+				game.rtr=null;game.dcl=game.trn%4;canvasDraw();
+				setTimeout(function(){game.trn=game.dlr+1;game.secondDeal()},dly);return}
+			// ou pour jouer
+			else if (game.plyStg && Math.abs(crdMve.plc.x)<2.5*crdWdt && Math.abs(crdMve.plc.y)<2.5*crdWdt) {
+				var okRgl,trcClr;// si règle observée
+				if (!(okRgl=pls.plyRng==0)) { // La première carte est indifférente
+					trcClr=game.pldCrd[game.trcNmb*4].clr;
+//               if (window.console) console.log(' trcClr:'+trcClr+' clrRng'+ game.clrRng+' Trn:'+game.trn+' plyRng'+pls.plyRng+' NmbClr:'+pls.clrNmb[game.clrRng[trcClr]]+' trm:'+game.trm+' NmbTrm:'+pls.clrNmb[0]+' Rgl:'+okRgl);
+               // Fournir de la couleur en montant,si possible, à l'atout
+					okRgl=crdMve.clr==trcClr && (trcClr!=game.trm) || (trcClr==game.trm && (trmRng[pls.crd[0].vle]<trmRng[game.wnnCrd.vle] || trmRng[game.wnnCrd.vle]<trmRng[crdMve.vle]));
+//               if (window.console) console.log('Fournir:'+okRgl);
+               // Couper, en montant si possible, sauf si première coupe ou partenaire maître
+					okRgl=okRgl || (!pls.clrNmb[game.clrRng[trcClr]] && ((crdMve.clr==game.trm && ((game.wnnCrd.clr!=game.trm) || (trmRng[pls.crd[0].vle]<trmRng[game.wnnCrd.vle] || trmRng[game.wnnCrd.vle]<trmRng[crdMve.vle])) || game.wnnPst%2==0)));
+//              if (window.console) console.log('Couper - Pas pouvoir fournir:'+(!pls.clrNmb[game.clrRng[trcClr]])+' Présenter de l’atout:'+(crdMve.clr==game.trm)+' Pour une 1ère coupe:'+(game.wnnCrd.clr!=game.trm)+' Plus fort:'+(trmRng[game.wnnCrd.vle]<trmRng[crdMve.vle])+' Ne pas avoir mieux:'+(trmRng[pls.crd[0].vle]<trmRng[game.wnnCrd.vle])+' '+okRgl);
+					// Défausser si le partenaire est maître ou coupe impossible
+					okRgl=okRgl || (!pls.clrNmb[game.clrRng[trcClr]] && (game.wnnPst%2==game.trn%2 || !pls.clrNmb[0]));
+//               if (window.console) console.log('Défausser:'+okRgl);
+					}
+
+				if (!okRgl){pls.crd[crdNos].plc=crdPlo;okClc=true}
+				else {// Pour jouer si règle observée)
+					crdMve.plc=game.plj[0];
+	            pls.crd.splice(crdNos,1)[0];
+					pls.display();
+	          	game.pldCrd[game.pldCrd.length]=crdMve;
+	            game.trcShw=(pls.plyRng==3);
+					game.pldPst[game.pldPst.length]=0;
+	            // Bilan
+					if (!game.wnnCrd || game.wnnCrd.bstCrd(crdMve)) {game.wnnCrd=crdMve;game.wnnPst=game.trn%4}
+     				canvasDraw();
+					setTimeout(function(){if (!game.trcShw) {game.trn++;game.trn%=4} else game.trn=game.wnnPst;
+               	if (window.console) console.log('Sud joue : '+crdVlt[crdMve.vle]+' de '+crdClr[crdMve.clr]);
+                  if (pls.blt && crdMve.clr==game.trm && (crdMve.vle==4 || crdMve.vle==5)) {pls.rsp=pls.blt==1?'Belote !':'Rebelote !';pls.blt++}
+						canvasDraw();players[game.trn].play()},dly);return}}
+		 	else pls.crd[crdNos].plc=crdPlo;okClc=true}}
+	else {
+		if (dx+dy<30 && links.length) {// Clic sur un lien
+     	   for (i=0;i<links.length;i++) if (links[i].test(tchStrX,tchStrY) && links[i].act) {links[i].act();return}}
+      if (dx+dy<30 && game.trcShw) {// clic pli suivant
+			game.trn=game.wnnPst;game.trcShw=false;
+			var i=4;while(i--) players[i].rsp=null;
+			canvasDraw();setTimeout(function(){players[game.trn%4].play()},dly);
+			return}
+      // Simple clic ailleurs si sud à la main
+      if (game.trn%4==0 && game.btr) {
+			pls.rsp='Passe';canvasDraw();
+			setTimeout(function(){game.trn++;if (16<game.trn-game.dlr) game.end();else game.bidding()},dly);return}}
+	if (crdMve) crdMve.plc=crdPlo;okClc=true;
+//   if (crdNos) {pls.crd[crdNos].plc=crdPlo;crdMve=crdPlo=crdNos=null;canvasDraw()}
+}
+window.onresize=function(){
+	resize();
+	canvasDraw();
+}
+/*===== Ouf ! Place aux joueurs et au jeu =====*/
+var players=[],game;
+window.onload=function(){
+	game=new Game();
+	game.shuffle();
+   i=4;while(i--) players[i]=new Player(i);
+	game.trn=0;
+	game.scrPrt=[0,0];
+	game.scrTtx=[0,0];
+	links[links.length]=new Link('Nouvelle partie ?',game.deal);
+	okClc=true;
+	canvasDraw();
+}
+
+
+</script>
+
+
+
+</body></html>
