@@ -20,38 +20,13 @@ $(function(){
         websocket.close();
         document.location.href = '/';
     });
-	
+
 	$('body').on('click', '.divider-2', function(){
-        websocket.send( JSON.stringify({type: "game/card/divise", number:2, userPosition:currentPlayerToPartageCard}));
-        switch (currentPlayerToPartageCard){
-            case 1: numberCardFirst += 2; break;
-            case 2: numberCardSecond += 2; break;
-            case 3: numberCardTierce += 2; break;
-            case 4: numberCardLast += 2; break;
-        }
-        if(numberCardLast == 5){
-            hideAction();
-            websocket.send( JSON.stringify({type: 'game/card/showAppel', appeller: 1}));
-        }
+        diviseCurrentCard(2);
     });
 
-    $('body').on('click', '.divider-3', function(){        
-		websocket.send(JSON.stringify({
-			type: "game/card/divise",
-			number: 3,
-			userPosition: currentPlayerToPartageCard
-		}));
-
-        switch (currentPlayerToPartageCard){
-            case 1: numberCardFirst += 3; break;
-            case 2: numberCardSecond += 3; break;
-            case 3: numberCardTierce += 3; break;
-            case 4: numberCardLast += 3; break;
-        }
-        if(numberCardLast == 5){
-            hideAction();
-            websocket.send( JSON.stringify({type: 'game/card/showAppel', appeller: 1}));
-        }
+    $('body').on('click', '.divider-3', function(){
+        diviseCurrentCard(3);
     });
 	
 	$('body').on('click', '.splitter', function(){
@@ -66,6 +41,30 @@ $(function(){
         websocket.send( JSON.stringify({type: "game/card/appel", appel: appel }));
     });
 });
+
+function diviseCurrentCard(number)
+{
+    websocket.send( JSON.stringify({
+        type: "game/card/divise",
+        number: number,
+        userPosition: currentPlayerToPartageCard
+    }));
+
+    $.each( players, function(i, user){
+        if(user.position == currentPlayerToPartageCard ){
+            if(user.isFirst){ firstCard += number;}
+            if(user.isIdle){ idleCard += number;}
+            if(user.isSplitter){ splitterCard += number;}
+            if(user.isDivider){ dividerCard += number;}
+            return false;
+        }
+    });
+
+    if(dividerCard >= 5){
+        hideAction();
+        websocket.send( JSON.stringify({type: 'game/card/showAppel', appeller: userFirst.position}));
+    }
+}
 
 function debug(debug)
 {

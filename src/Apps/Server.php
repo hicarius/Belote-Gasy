@@ -44,15 +44,17 @@ class Server implements MessageComponentInterface
 			}else{
 				$equipNumber = 0;
 			}
-			$this->tables[$table]['equips'][$equipNumber][] = $sessionUser->id;
 
-			$this->tables[$table]['decks'] = array();
+			$this->tables[$table]['equips'][$equipNumber][] = $sessionUser->id;
 			$this->tables[$table]['users'][$sessionUser->id] = $sessionUser;
 			$this->tables[$table]['loading'] = 0;
 			$this->tables[$table]['sockets'][$sessionUser->id] = $socket;
 
 			if( count($this->tables[$table]['users']) >= 4 ){ //tous les 4 joueurs sont connectées sur la table
 				$this->log($socket, "Table {$table} : All players are join the table");
+				$this->tables[$table]['decks'] = array();
+				$this->tables[$table]['deck_equip1'] = array();
+				$this->tables[$table]['deck_equip2'] = array();
 				$this->_prepareTable($socket, $table);
 			}
 		}
@@ -88,7 +90,7 @@ class Server implements MessageComponentInterface
 					$this->tables[$table]['scores']['e2'] = 0;
 					$this->log($socket, "Table {$table} : Card prepared!");
 					$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doPrepareBoard', 'decks' => $this->tables[$table]['decks'])));
-					$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doPreparetFirstToRun', 'first' => $this->tables[$table]['first'], 'splitter' => $this->tables[$table]['splitter'], 'divider' => $this->tables[$table]['divider'])));
+					$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doPrepareFirstToRun', 'first' => $this->tables[$table]['first'], 'splitter' => $this->tables[$table]['splitter'], 'divider' => $this->tables[$table]['divider'])));
 					$socketSplitter = Table::getSplitterSocket($this->tables[$table]);
 					$this->sendToClient($socketSplitter, json_encode(array('type' => 'game', 'action' => 'showSplit')), true);
 				}
@@ -99,7 +101,6 @@ class Server implements MessageComponentInterface
 				$this->tables[$table]['appel_position'] = 0; //reset appel
 				Table::splitDeck($this->tables[$table], $data->number);
 				$this->log($socket, "Table {$table} : Card splitted!");
-				$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doDivise', 'decks' => $this->tables[$table]['decks'])));
 				$socketDivider = Table::getDividerSocket($this->tables[$table]);
 				$this->sendToClient($socketDivider, json_encode(array('type' => 'game', 'action' => 'showDivise')), true);
 				break;
@@ -150,7 +151,7 @@ class Server implements MessageComponentInterface
 				$this->tables[$table]['appel_position'] = $this->tables[$table]['users'][$sessionUser->id]->position;
 				//begin game
 				for($i=1; $i<=4; $i++) { //on partage les 3 derniers cartes avant de commencer
-					$this->partageCard($socket, 3, $i);
+					$this->partageCard($socket, 3, $i, true);
 				}
 				$this->log($socket, "Table {$table} : Begin game");
 				return;
@@ -162,7 +163,7 @@ class Server implements MessageComponentInterface
 			if($cAppel == 'tr' || $cAppel == 'as'){
 				//begin game
 				for($i=1; $i<=4; $i++) { //on partage les 3 derniers cartes avant de commencer
-					$this->partageCard($socket, 3, $i);
+					$this->partageCard($socket, 3, $i, true);
 				}
 				$this->log($socket, "Table {$table} : Begin game");
 				return;
@@ -170,7 +171,7 @@ class Server implements MessageComponentInterface
 			if($cPosition == $nextAppeller){
 				//begin game
 				for($i=1; $i<=4; $i++) { //on partage les 3 derniers cartes avant de commencer
-					$this->partageCard($socket, 3, $i);
+					$this->partageCard($socket, 3, $i, true);
 				}
 				$this->log($socket, "Table {$table} : Begin game");
 				return;
@@ -178,7 +179,7 @@ class Server implements MessageComponentInterface
 			if( strpos('cr', $cAppel) === true ){
 				//begin game
 				for($i=1; $i<=4; $i++) { //on partage les 3 derniers cartes avant de commencer
-					$this->partageCard($socket, 3, $i);
+					$this->partageCard($socket, 3, $i, true);
 				}
 				$this->log($socket, "Table {$table} : Begin game");
 				return;
@@ -360,7 +361,7 @@ class Server implements MessageComponentInterface
 		}
 	}
 
-	protected function partageCard($socket, $number, $currentPlayerToPartageCard)
+	protected function partageCard($socket, $number, $currentPlayerToPartageCard, $isLast = false)
 	{
 		$table = $socket->Session->get('table');
 
@@ -408,6 +409,19 @@ class Server implements MessageComponentInterface
 			//sleep(1);
 		}
 
+		if($isLast){
+			//activate de first position card;
+			$socketToactivateCard = Table::getSocketByPosition(1);
+			$this->sendToClient($socketToactivateCard,
+				json_encode(
+					array(
+						'type' => 'game',
+						'action' => 'activateCard',
+					)
+				)
+			);
+		}
+
 	}
 
 	public function placedCard($socket, $userId, $cardName)
@@ -430,10 +444,18 @@ class Server implements MessageComponentInterface
 
 		//si tous les 4 cartes sont sur la table
 		if( count($this->tables[$table]['in_table']) >= 4 ){
-			sleep(1);
 			$this->checkWinCard($socket);
+		}else{
+			$socketToactivateCard = Table::getSocketByPosition( Table::getNextPositionByPosition($userPosition) );
+			$this->sendToClient($socketToactivateCard,
+				json_encode(
+					array(
+						'type' => 'game',
+						'action' => 'activateCard',
+					)
+				)
+			);
 		}
-
 	}
 
 	public function checkWinCard($socket)
@@ -495,7 +517,7 @@ class Server implements MessageComponentInterface
 					break;
 			}
 
-			$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doPreparetFirstToRun', 'first' => $this->tables[$table]['first'], 'splitter' => $this->tables[$table]['splitter'], 'divider' => $this->tables[$table]['divider'])));
+			$this->sendToClient($socket, json_encode(array('type' => 'game', 'action' => 'doPrepareFirstToRun', 'first' => $this->tables[$table]['first'], 'splitter' => $this->tables[$table]['splitter'], 'divider' => $this->tables[$table]['divider'])));
 			$socketSplitter = Table::getSplitterSocket($this->tables[$table]);
 			$this->sendToClient($socketSplitter, json_encode(array('type' => 'game', 'action' => 'showSplit')), true);
 

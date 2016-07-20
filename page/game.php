@@ -81,20 +81,20 @@ if( ($session->get('in_table') == 1 && $session->get('table') == $_GET['r']) == 
                                 case 'doPrepareBoard':
                                     prepareBord(data.decks);
                                     break;
-								case 'doPreparetFirstToRun':
+								case 'doPrepareFirstToRun':
                                     checkFirstToRun(data.first, data.divider, data.splitter);
                                     break;
                                 case 'showSplit':
                                     showSplitBlock();
-                                    break;
-								case 'doDivise':
-                                    checkDiviseAction(data.decks);
                                     break;
                                 case 'showDivise':
                                     showDiviseBlock();
                                     break;
                                 case 'doDiviseCard':
                                     diviseCard(data.userId, data.card, data.nextPlayerToPartageCard);
+                                    break;
+                                case 'activateCard':
+                                    activateCard(/*data.userPosition, data.actives*/);
                                     break;
                                 case 'doPlacedCard':
                                     placedCard(data.userId, data.userPosition, data.cardName);
@@ -109,7 +109,11 @@ if( ($session->get('in_table') == 1 && $session->get('table') == $_GET['r']) == 
                                     appel(data.userId, data.appel, data.nextAppeller);
                                     break;
                                 case 'removeInTable':
-                                    removeInTable(data.winnerPosition);
+                                    setTimeout(
+                                        function(){
+                                            removeInTable(data.winnerPosition);
+                                        }
+                                    , 1000);
                                     break;
                                 case 'showScore':
                                     showScore(data.e1, data.e2);

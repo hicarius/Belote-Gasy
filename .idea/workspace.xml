@@ -2,8 +2,92 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9040b936-cb37-47be-88a1-15b491ecbe21" name="Default" comment="">
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\back.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\ca10.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\ca7.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\ca8.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\ca9.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\caA.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\caJ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\caK.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\caQ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_blue1.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_blue2.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_blue3.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_blue4.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_blue5.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_green1.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_green2.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_green3.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_green4.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_green5.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_red1.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_red2.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_red3.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_red4.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\cardBack_red5.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_c10.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_c7.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_c8.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_c9.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_cA.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_cJ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_cK.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_cQ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_d10.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_d7.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_d8.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_d9.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_dA.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_dJ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_dK.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_dQ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_h10.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_h7.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_h8.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_h9.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_hA.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_hJ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_hK.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_hQ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_s10.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_s7.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_s8.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_s9.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_sA.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_sJ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_sK.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\cards\card_sQ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\co10.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\co7.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\co8.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\co9.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\coA.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\coJ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\coK.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\coQ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\pi10.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\pi7.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\pi8.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\pi9.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\piA.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\piJ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\piK.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\piQ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\tr10.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\tr7.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\tr8.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\tr9.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\trA.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\trJ.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\trK.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\HTDOCS\hh\ch\belote\assets\images\trQ.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Apps/Server.php" afterPath="$PROJECT_DIR$/src/Apps/Server.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/js/belote.js" afterPath="$PROJECT_DIR$/assets/js/belote.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/page/game.php" afterPath="$PROJECT_DIR$/page/game.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/page/get_user.php" afterPath="$PROJECT_DIR$/page/get_user.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/js/script.js" afterPath="$PROJECT_DIR$/assets/js/script.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="belote.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -45,11 +129,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="belote.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="belote.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/assets/js/belote.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.1088">
-              <caret line="38" column="8" selection-start-line="38" selection-start-column="8" selection-end-line="38" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -58,8 +142,8 @@
       <file leaf-file-name="game.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/page/game.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.8461537">
-              <caret line="96" column="43" selection-start-line="96" selection-start-column="43" selection-end-line="96" selection-end-column="43" />
+            <state vertical-scroll-proportion="-13.730769">
+              <caret line="106" column="42" selection-start-line="106" selection-start-column="42" selection-end-line="106" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -68,8 +152,8 @@
       <file leaf-file-name="script.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/assets/js/script.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.2413793">
-              <caret line="357" column="11" selection-start-line="357" selection-start-column="11" selection-end-line="357" selection-end-column="11" />
+            <state vertical-scroll-proportion="-8.275862">
+              <caret line="521" column="9" selection-start-line="521" selection-start-column="9" selection-end-line="521" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -78,8 +162,8 @@
       <file leaf-file-name="Server.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Apps/Server.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-17.461538">
-              <caret line="407" column="14" selection-start-line="407" selection-start-column="14" selection-end-line="407" selection-end-column="14" />
+            <state vertical-scroll-proportion="-14.230769">
+              <caret line="418" column="49" selection-start-line="418" selection-start-column="37" selection-end-line="418" selection-end-column="49" />
               <folding>
                 <element signature="e#23#61#0#PHP" expanded="true" />
               </folding>
@@ -87,10 +171,20 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="Table.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Apps/Table.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.5466667">
+              <caret line="95" column="27" selection-start-line="95" selection-start-column="27" selection-end-line="95" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="Belote.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Apps/Belote.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-17.807692">
+            <state vertical-scroll-proportion="-17.846153">
               <caret line="77" column="39" selection-start-line="77" selection-start-column="39" selection-end-line="77" selection-end-column="39" />
               <folding />
             </state>
@@ -111,15 +205,15 @@
         <option value="$PROJECT_DIR$/src/Apps/MySession.php" />
         <option value="$PROJECT_DIR$/page/room.php" />
         <option value="$PROJECT_DIR$/assets/css/style.css" />
-        <option value="$PROJECT_DIR$/page/get_user.php" />
         <option value="$PROJECT_DIR$/bin/server.php" />
         <option value="$PROJECT_DIR$/src/Apps/Table.php" />
         <option value="$PROJECT_DIR$/src/Apps/Belote.php" />
-        <option value="$PROJECT_DIR$/page/game.php" />
         <option value="$PROJECT_DIR$/assets/js/EaselJsUtils.js" />
-        <option value="$PROJECT_DIR$/assets/js/script.js" />
-        <option value="$PROJECT_DIR$/src/Apps/Server.php" />
         <option value="$PROJECT_DIR$/assets/js/belote.js" />
+        <option value="$PROJECT_DIR$/page/get_user.php" />
+        <option value="$PROJECT_DIR$/src/Apps/Server.php" />
+        <option value="$PROJECT_DIR$/assets/js/script.js" />
+        <option value="$PROJECT_DIR$/page/game.php" />
       </list>
     </option>
   </component>
@@ -163,6 +257,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -229,8 +325,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -295,12 +389,21 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1320" height="784" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.09047619" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18809524" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32874617" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -335,14 +438,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/assets/js/belote.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="44" column="40" selection-start-line="44" selection-start-column="36" selection-end-line="44" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/page/game.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -378,7 +473,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="18" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -441,7 +535,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -489,7 +582,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="37" column="33" selection-start-line="37" selection-start-column="31" selection-end-line="37" selection-end-column="33" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -622,13 +714,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/page/get_user.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31166667">
-          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/page/room.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -658,27 +743,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Apps/Table.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5676127">
-          <caret line="65" column="24" selection-start-line="65" selection-start-column="24" selection-end-line="65" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Apps/Belote.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-17.807692">
-          <caret line="77" column="39" selection-start-line="77" selection-start-column="39" selection-end-line="77" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/assets/js/EaselJsUtils.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3808">
           <caret line="35" column="49" selection-start-line="35" selection-start-column="44" selection-end-line="35" selection-end-column="49" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -692,42 +760,72 @@
     </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/DHTML.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4144">
-          <caret line="946" column="2" selection-start-line="946" selection-start-column="2" selection-end-line="946" selection-end-column="2" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1195" column="27" selection-start-line="1195" selection-start-column="17" selection-end-line="1195" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/js/jquery.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.496">
+          <caret line="2" column="31160" selection-start-line="2" selection-start-column="31160" selection-end-line="2" selection-end-column="31160" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/js/belote.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/assets/js/script.js">
+    <entry file="file://$PROJECT_DIR$/page/get_user.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.2413793">
-          <caret line="357" column="11" selection-start-line="357" selection-start-column="11" selection-end-line="357" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/page/game.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.8461537">
-          <caret line="96" column="43" selection-start-line="96" selection-start-column="43" selection-end-line="96" selection-end-column="43" />
+        <state vertical-scroll-proportion="0.56666666">
+          <caret line="20" column="31" selection-start-line="20" selection-start-column="31" selection-end-line="20" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Apps/Server.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-17.461538">
-          <caret line="407" column="14" selection-start-line="407" selection-start-column="14" selection-end-line="407" selection-end-column="14" />
+        <state vertical-scroll-proportion="-14.230769">
+          <caret line="418" column="49" selection-start-line="418" selection-start-column="37" selection-end-line="418" selection-end-column="49" />
           <folding>
             <element signature="e#23#61#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/assets/js/belote.js">
+    <entry file="file://$PROJECT_DIR$/page/game.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.1088">
-          <caret line="38" column="8" selection-start-line="38" selection-start-column="8" selection-end-line="38" selection-end-column="8" />
+        <state vertical-scroll-proportion="-13.730769">
+          <caret line="106" column="42" selection-start-line="106" selection-start-column="42" selection-end-line="106" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Apps/Belote.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-17.846153">
+          <caret line="77" column="39" selection-start-line="77" selection-start-column="39" selection-end-line="77" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/js/script.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.275862">
+          <caret line="521" column="9" selection-start-line="521" selection-start-column="9" selection-end-line="521" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Apps/Table.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5466667">
+          <caret line="95" column="27" selection-start-line="95" selection-start-column="27" selection-end-line="95" selection-end-column="27" />
           <folding />
         </state>
       </provider>

@@ -11,12 +11,12 @@ var equips =  [[], []]; //les cartes de joueur 1
 
 var decks_equip1, decks_equip2; //les plis
 
-var randPlayer = []; //pour savoir la main //reset à chaque partie
+var userFirst = null, userSplitter = null, userDivider= null, userIdle = null;
+var firstCard = 0, idleCard = 0, splitterCard = 0, dividerCard = 0;
+var playerToPartageCard = 1;
 
-var currentPlayerToPartageCard = 1, playerToPartageCard = 1; //reset à chaque partie
-var numberCardFirst = 0, numberCardSecond = 0, numberCardTierce = 0, numberCardLast = 0; //reset à chaque partie
+var currentPlayerToPartageCard = 1; //reset à chaque partie
 
-var playingDeck = {color: 'blue', number: 5}; //carte à jouer
 var p_deck, firstBoard; //position du deck
 var ps_card, pn_card, pe_card, po_card; //position du carte des joueur (sud, nord, est, oeust)
 var ps_card_table, pn_card_table, pe_card_table, po_card_table; //position du carte des joueur dur table  (sud, nord, est, oeust)
@@ -39,7 +39,7 @@ function initGame()
 
     loader = new createjs.LoadQueue(false);
     var manifest = [
-        {src: "images/back.png", id: "back"},
+        {src: "images/cards-1/back.png", id: "back"},
 		{src: "images/first.png", id: "first"},
         {src: "images/bar-button.png", id: "bar-button"},
         {src: "images/first.png", id: "first"},
@@ -51,7 +51,7 @@ function initGame()
     //load all card
     $.each( ['tr', 'ca', 'co', 'pi'], function(i, color){
         $.each([7,8,9,10,'A','J','Q','K'], function(x, number){
-            manifest.push({src: "images/" + color + number + ".png", id: color + number});
+            manifest.push({src: "images/cards-1/" + color + number + ".png", id: color + number});
         });
     });
     ;
@@ -84,8 +84,8 @@ function preparePosition()
         {x:383, y:45, rotation:50},
         {x:375, y:50, rotation:25},
         {x:380, y:60, rotation:5},
-        {x:475, y:135, rotation:160},
-        {x:500, y:100, rotation:135},
+        {x:460, y:120, rotation:160},
+        {x:485, y:90, rotation:135},
     ];
 
     //est
@@ -93,8 +93,8 @@ function preparePosition()
     pe_card_table = {x: 440, y: 225, rotation: 0 };
 	pe_first_palette = {x: 757,y: 220};
     pe_card_single = [
-        {x:720, y:180, rotation:0},
-        {x:775, y:265, rotation:165},
+        {x:720, y:200, rotation:0},
+        {x:770, y:265, rotation:165},
         {x:765, y:264, rotation:155},
         {x:760, y:257, rotation:135},
         {x:755, y:255, rotation:115},
@@ -108,14 +108,14 @@ function preparePosition()
     ps_card_table = {x: 370, y: 275, rotation: 0 };
 	ps_first_palette = {x: 98,y: 552};
     ps_card_single = [		
-		{x:250, y:580, rotation:180, scale:[1.1, 1.1]},
-        {x:300, y:580, rotation:180, scale:[1.1, 1.1]},
-        {x:350, y:580, rotation:180, scale:[1.1, 1.1]},
-        {x:400, y:580, rotation:180, scale:[1.1, 1.1]},
-        {x:450, y:580, rotation:180, scale:[1.1, 1.1]},
-        {x:500, y:580, rotation:180, scale:[1.1, 1.1]},
-        {x:550, y:580, rotation:180, scale:[1.1, 1.1]},
-		{x:600, y:580, rotation:180, scale:[1.1, 1.1]},
+		{x:250, y:580, rotation:180, scale:[0.8, 0.8]},
+        {x:300, y:580, rotation:180, scale:[0.8, 0.8]},
+        {x:350, y:580, rotation:180, scale:[0.8, 0.8]},
+        {x:400, y:580, rotation:180, scale:[0.8, 0.8]},
+        {x:450, y:580, rotation:180, scale:[0.8, 0.8]},
+        {x:500, y:580, rotation:180, scale:[0.8, 0.8]},
+        {x:550, y:580, rotation:180, scale:[0.8, 0.8]},
+		{x:600, y:580, rotation:180, scale:[0.8, 0.8]},
     ];
 
     //ouest
@@ -124,13 +124,13 @@ function preparePosition()
 	po_first_palette = {x: 5,y: 220};
     po_card_single = [
         {x:25, y:275, rotation:0},
-        {x:110, y:358, rotation:170},
-        {x:135, y:340, rotation:155},
-        {x:155, y:312, rotation:135},
-        {x:165, y:280, rotation:120},
-        {x:165, y:240, rotation:100},
-        {x:148, y:200, rotation:75},
-        {x:120, y:167, rotation:55},
+        {x:100, y:330, rotation:160},
+        {x:120, y:305, rotation:140},
+        {x:127, y:280, rotation:120},
+        {x:127, y:245, rotation:100},
+        {x:110, y:215, rotation:70},
+        {x:85, y:200, rotation:50},
+        {x:55, y:190, rotation:30},
     ];
 
     //position du pli
@@ -207,9 +207,8 @@ function prepareBord(deckData)
 {
     //create decks
     $.each( deckData, function(i, item){
-        var card = easelJsUtils.createCard(loader.getResult('back'), {x: p_deck.x, y: p_deck.y}, item);
-        cards[item] = card;
-		decks.push(card);
+        cards.push( easelJsUtils.createCard(loader.getResult('back'), {x: p_deck.x, y: p_deck.y, scale:[0.5, 0.5]}, item) );
+		//decks.push(card);
     });
 
     //create affichage score
@@ -263,37 +262,43 @@ function addPlayerToEquip(userId, equipId)
 
 function checkFirstToRun(first, divider, splitter)
 {
-	var u_splitter, u_divider;
+    numberCardFirst = 0;
+    numberCardIdle = 0;
+    numberCardSplitter = 0;
+    numberCardDivider = 0;
+
 	$.each(players, function(x, user){
         if(user.position == splitter){
-            u_splitter = user;
+            userSplitter = user;
             user.isFirst = false;
-            user.isSecond = false;
-            user.isTierce = true;
-            user.isLast = false;
+            user.isIdle =  false;
+            user.isSplitter =  true;
+            user.isDivider = false;
         }
 		if(user.position == divider){
-			u_divider = user;
+            userDivider = user;
             user.isFirst = false;
-            user.isSecond = false;
-            user.isTierce = false;
-            user.isLast = true;
+            user.isIdle =  false;
+            user.isSplitter =  false;
+            user.isDivider = true;
 		}
         if (user.position == first) {
+            userFirst = user;
             user.isFirst = true;
-            user.isSecond = false;
-            user.isTierce = false;
-            user.isLast = false;
+            user.isIdle =  false;
+            user.isSplitter =  false;
+            user.isDivider = false;
             createjs.Tween.get(firstBoard, {override: true}).to({
                 x: user.first_palette.x,
                 y: user.first_palette.y
             }, 500);
         }
         if(user.position != first && user.position != divider && user.position != splitter ){
+            userIdle = user;
             user.isFirst = false;
-            user.isSecond = true;
-            user.isTierce = false;
-            user.isLast = false;
+            user.isIdle =  true;
+            user.isSplitter =  false;
+            user.isDivider = false;
         }
 	});
 
@@ -325,16 +330,6 @@ function hideAction()
     $('.splitter, .divider-2, .divider-3, .appel').hide();
 }
 
-function checkDiviseAction(deckData)
-{
-	//suppression d'ancien decks
-	decks = [];
-    //create decks	
-    $.each( deckData, function(i, item){
-        decks.push(cards[item]);
-    });
-}
-
 function showSplitBlock()
 {
     hideAction();
@@ -361,7 +356,7 @@ function diviseCard(userId, cardName, nextPlayerToPartageCard)
 	});	
 	
 	var card;
-	$.each(decks, function(x, carte){
+	$.each(cards, function(x, carte){
 		if(carte.name == cardName){
 			card = carte;
 			return false;
@@ -373,16 +368,17 @@ function diviseCard(userId, cardName, nextPlayerToPartageCard)
 	switch (player.orientation){
 		case 'n' :
             card.mouseEnabled = false;
-			createjs.Tween.get(card, {override:true}).to({x: pn_card_single[key].x, y: pn_card_single[key].y, rotation: pn_card_single[key].rotation},500);
+			createjs.Tween.get(card, {override:true}).to({x : card.x-100, y: card.y-20, scaleX: 1, scaleY: 1},300).to({x: pn_card_single[key].x, y: pn_card_single[key].y, rotation: pn_card_single[key].rotation, scaleX: 0.5, scaleY: 0.5},500);
 			break;
 		case 'e' :
             card.mouseEnabled = false;
-			createjs.Tween.get(card, {override:true}).to({x: pe_card_single[key].x, y: pe_card_single[key].y, rotation: pe_card_single[key].rotation},500);
+			createjs.Tween.get(card, {override:true}).to({x : card.x-100, y: card.y-20, scaleX: 1, scaleY: 1},300).to({x: pe_card_single[key].x, y: pe_card_single[key].y, rotation: pe_card_single[key].rotation, scaleX: 0.5, scaleY: 0.5},500);
 			break;
 		case 's' :
-			createjs.Tween.get(card, {override:true}).to({x:ps_card_single[key].x, y: ps_card_single[key].y, rotation: ps_card_single[key].rotation, scaleX: ps_card_single[key].scale[0], scaleY: ps_card_single[key].scale[1]},500);
-			card.mouseEnabled = true;
+			createjs.Tween.get(card, {override:true}).to({x : card.x-100, y: card.y-20, scaleX: 1, scaleY: 1},300).to({x:ps_card_single[key].x, y: ps_card_single[key].y, rotation: ps_card_single[key].rotation, scaleX: ps_card_single[key].scale[0], scaleY: ps_card_single[key].scale[1]},500);
+			//card.mouseEnabled = true;
 			card.image = loader.getResult(card.name);
+            console.log(card);
 			card.addEventListener("mouseover", function(event) {
 				createjs.Tween.get(card, {override:true}).to({x:ps_card_single[card.key].x, y: ps_card_single[card.key].y - 20},100);
 			});
@@ -394,12 +390,22 @@ function diviseCard(userId, cardName, nextPlayerToPartageCard)
 				card.removeAllEventListeners();
                 websocket.send(JSON.stringify({type: "game/card/placed", userId: uid, cardName: card.name}));
 
+                //disable all card
+                $.each(players, function(x, user){
+                    if(uid == user.id){
+                        $.each(user.cards, function(k, card){
+                           disableCard(card);
+                        });
+                        return false;
+                    }
+                });
+
 			});
 			//player.x += 60;
 			break;
 		case 'o' :
             card.mouseEnabled = false;
-			createjs.Tween.get(card, {override:true}).to({x: po_card_single[key].x, y: po_card_single[key].y, rotation: po_card_single[key].rotation},500);
+			createjs.Tween.get(card, {override:true}).to({x : card.x-100, y: card.y-20, scaleX: 1, scaleY: 1},300).to({x: po_card_single[key].x, y: po_card_single[key].y, rotation: po_card_single[key].rotation, scaleX: 0.5, scaleY: 0.5},500);
 			break;
 	}    
 
@@ -407,6 +413,8 @@ function diviseCard(userId, cardName, nextPlayerToPartageCard)
 	createjs.Sound.play("cardPlace");
 	//on modifie l'index
     newIndex ++;
+
+    player.cards.push(card);
 
 	stage.setChildIndex(card, newIndex);
 
@@ -417,6 +425,7 @@ function placedCard(userId, userPosition, cardName)
 {
     var currentUser;
     var card;
+    var position;
 
     $.each(players, function(x, user){
         if(user.id == userId){
@@ -431,7 +440,7 @@ function placedCard(userId, userPosition, cardName)
         case 'e': position = pe_card_table;break;
     }
 
-    $.each(decks, function(x, carte){
+    $.each(cards, function(x, carte){
         if(carte.name == cardName){
             card = carte;
             return false;
@@ -440,7 +449,7 @@ function placedCard(userId, userPosition, cardName)
 
     createjs.Sound.play("cardSlide");
     card.image = loader.getResult(cardName);
-    createjs.Tween.get(card, {override:true}).to({x:position.x, y: position.y, rotation: position.rotation, scaleX: 1, sacleY: 1},100);
+    createjs.Tween.get(card, {override:true}).to({x:position.x, y: position.y, rotation: 0, scaleX: 0.6, scaleY: 0.6},100);
     cardInTable.push(card);
 }
 
@@ -462,6 +471,8 @@ function appel(userId, appel, nextAppeller)
 
 function removeInTable(winnerPosition)
 {
+    var position;
+
     if(winnerPosition == 1 || winnerPosition == 3){
         position = decks_equip1;
     }else{
@@ -470,7 +481,7 @@ function removeInTable(winnerPosition)
 
     $.each(cardInTable, function(x, card){
         card.image = loader.getResult('back');
-        createjs.Tween.get(card, {override:true}).to({x:position.x, y: position.y, rotation: position.rotation},100);
+        createjs.Tween.get(card, {override:true}).to({x:position.x, y: position.y, rotation: position.rotation, scaleX: 0.3, scaleY: 0.3},500);
     });
     cardInTable = [];
 }
@@ -482,8 +493,8 @@ function showScore(e1, e2)
 
     preparePosition();
 
-    $.each(decks, function(x, card){
-        createjs.Tween.get(card, {override:true}).to({x:p_deck.x, y: p_deck.y, rotation: 0},100);
+    $.each(cards, function(x, card){
+        createjs.Tween.get(card, {override:true}).to({x: p_deck.x, y: p_deck.y, rotation: 0, scaleX: 0.5, scaleY: 0.5},100);
     });
 	
 	$.each(players, function(x, user){
@@ -491,11 +502,39 @@ function showScore(e1, e2)
     });
 
     switch (playerToPartageCard){
-        case 1: currentPlayerToPartageCard = 2; playerToPartageCard = 2; break;
-        case 2: currentPlayerToPartageCard = 3; playerToPartageCard = 3; break;
-        case 3: currentPlayerToPartageCard = 4; playerToPartageCard = 4; break;
-        case 4: currentPlayerToPartageCard = 1; playerToPartageCard = 1; break;
+        case 1: currentPlayerToPartageCard = 2; break;
+        case 2: currentPlayerToPartageCard = 3; break;
+        case 3: currentPlayerToPartageCard = 4; break;
+        case 4: currentPlayerToPartageCard = 1; break;
     }
-    numberCardFirst = 0; numberCardSecond = 0; numberCardTierce = 0; numberCardLast = 0;
+
     newIndex = 1;
+}
+
+function activateCard()
+{
+    $.each(players, function(x, user){
+        if(uid == user.id){
+            $.each(user.cards, function(k, card){
+                enableCard(card);
+            });
+            return false;
+        }
+    });
+}
+
+function disableCard(card)
+{
+    card.filters = [
+        new createjs.ColorFilter(0.5, 0.5, 0.5, 1, 0, 0, 0, 0.5)
+    ];
+    card.cache(0, 0, 105, 143);
+    card.mouseEnabled = false;
+}
+
+function enableCard(card)
+{
+    card.filters = [];
+    card.cache(0, 0, 105, 143);
+    card.mouseEnabled = true;
 }
