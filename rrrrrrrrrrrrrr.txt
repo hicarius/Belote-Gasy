@@ -1,2 +1,2 @@
-j: && cd J:\Perso\belote\ && php bin\server.php
-cd C:\HTDOCS\hh\ch\belote && php bin\server.php
+f: && cd F:\HTDOCS\hh\ch\belote\ && php bin\server.php
+cd F:\HTDOCS\hh\ch\belote && php bin\server.php

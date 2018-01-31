@@ -1,5 +1,5 @@
 <?php
-require_once '/src/Apps/MySession.php';
+require_once 'src/Apps/MySession.php';
 use Apps\MySession;
 $session = new MySession();
 ?>

@@ -411,7 +411,7 @@ class Server implements MessageComponentInterface
 
 		if($isLast){
 			//activate de first position card;
-			$socketToactivateCard = Table::getSocketByPosition(1);
+			$socketToactivateCard = Table::getSocketByPosition($this->tables[$table], 1);
 			$this->sendToClient($socketToactivateCard,
 				json_encode(
 					array(
@@ -446,7 +446,7 @@ class Server implements MessageComponentInterface
 		if( count($this->tables[$table]['in_table']) >= 4 ){
 			$this->checkWinCard($socket);
 		}else{
-			$socketToactivateCard = Table::getSocketByPosition( Table::getNextPositionByPosition($userPosition) );
+			$socketToactivateCard = Table::getSocketByPosition( $this->tables[$table], Table::getNextPositionByPosition($userPosition) );
 			$this->sendToClient($socketToactivateCard,
 				json_encode(
 					array(
